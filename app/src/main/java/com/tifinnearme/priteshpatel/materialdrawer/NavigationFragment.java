@@ -7,11 +7,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -29,6 +33,7 @@ public class NavigationFragment extends Fragment {
     private boolean mFromSavedInstanceState;
     private View containerView;
     int drawer_frag;
+    private MyAdapter myAdapter;
     public NavigationFragment() {
         // Required empty public constructor
     }
@@ -49,10 +54,27 @@ public class NavigationFragment extends Fragment {
         // Inflate the layout for this fragment
         View layout=inflater.inflate(R.layout.fragment_navigation, container, false);//define root for xml
         recyclerView=(RecyclerView)layout.findViewById(R.id.drawer_list);//Register recyclerview
+        myAdapter=new MyAdapter(getActivity(),getData());
+        recyclerView.setAdapter(myAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));//set layout manager before executing as
+        // it is the key parameter to show the data
         return layout;
         }
 
+    public static List<DataList> getData(){
+        List<DataList> data=new ArrayList<>();
+        int icon[]={R.drawable.home,R.drawable.account,R.drawable.arrow_up,R.drawable.bell,R.drawable.magnify,R.drawable.settings};
+        String[] texts={"Home","Account","Requests","Notifications","Search","Settings"};
+        for(int i=0; i<texts.length && i<icon.length; i++)
 
+        {
+            DataList ob=new DataList();
+            ob.iconId=icon[i];
+            ob.iconName=texts[i];
+            data.add(ob);
+        }
+        return  data;
+    }
     public void setUp(int drawer_fragment, DrawerLayout drawerLayout, final Toolbar toolbar) {
         //Initialize the drawer layout and toggle
         containerView=getActivity().findViewById(drawer_fragment);

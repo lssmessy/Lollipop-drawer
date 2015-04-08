@@ -23,7 +23,7 @@
         <fragment
             android:id="@+id/drawer_fragment"
             android:name="com.tifinnearme.priteshpatel.materialdrawer.NavigationFragment"
-            android:layout_width="240dp"
+            android:layout_width="200dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             app:layout="@layout/fragment_navigation"
