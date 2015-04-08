@@ -2,6 +2,7 @@ package com.tifinnearme.priteshpatel.materialdrawer;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,7 +22,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NavigationFragment extends Fragment {
+public class NavigationFragment extends Fragment implements MyAdapter.ClikListener {
 
     private RecyclerView recyclerView;
     public static final String PREF_FILE_NAME="testprefs";
@@ -55,9 +56,12 @@ public class NavigationFragment extends Fragment {
         View layout=inflater.inflate(R.layout.fragment_navigation, container, false);//define root for xml
         recyclerView=(RecyclerView)layout.findViewById(R.id.drawer_list);//Register recyclerview
         myAdapter=new MyAdapter(getActivity(),getData());
+        myAdapter.setOnClikListener(this);
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));//set layout manager before executing as
         // it is the key parameter to show the data
+
+
         return layout;
         }
 
@@ -134,5 +138,12 @@ public class NavigationFragment extends Fragment {
     public static String readFromPrefs(Context context,String prefName,String prefDefaultValue){
         SharedPreferences getPrefs=context.getSharedPreferences(PREF_FILE_NAME,Context.MODE_PRIVATE);
         return  getPrefs.getString(prefName,prefDefaultValue);
+    }
+
+
+    @Override
+    public void itemClicked(View view, int position) {
+
+        startActivity(new Intent(getActivity(), Subactivity.class));
     }
 }

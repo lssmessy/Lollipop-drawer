@@ -17,10 +17,13 @@ import java.util.List;
  */
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
+    private Context context;
     private LayoutInflater inflater;
+    private ClikListener clikListener;
     List<DataList> data= Collections.emptyList();//take care of the null objext reference
 //get data from DataList class in the form of array
     public MyAdapter(Context context,List<DataList> data){
+        this.context=context;
         inflater= LayoutInflater.from(context);//Get the context for layout of row
         this.data=data;
     }
@@ -39,21 +42,38 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         Log.d("onBindViewHolder", String.valueOf(position));
         viewHolder.icon.setImageResource(currentObject.iconId);
         viewHolder.text.setText(currentObject.iconName);
+
+    }
+
+    public void setOnClikListener(ClikListener clikListener){
+        this.clikListener=clikListener;
     }
 
     @Override
     public int getItemCount() {
         return data.size();
     }
-    class MyViewHolder extends RecyclerView.ViewHolder{
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView text;
         ImageView icon;
         public MyViewHolder(View itemView) {//Here, we will get the recycler view items/data in the form of icon, text
             super(itemView);
+            itemView.setOnClickListener(this);
             text= (TextView)itemView.findViewById(R.id.listText);
             icon=(ImageView) itemView.findViewById(R.id.listIcon);
-
-
+            text.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+
+            if(clikListener!=null)
+            {
+                clikListener.itemClicked(v,getPosition());
+            }
+        }
+    }
+    public interface ClikListener{
+        public void itemClicked(View view,int position);
     }
 }
