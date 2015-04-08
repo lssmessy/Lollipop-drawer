@@ -61,7 +61,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             itemView.setOnClickListener(this);
             text= (TextView)itemView.findViewById(R.id.listText);
             icon=(ImageView) itemView.findViewById(R.id.listIcon);
-            text.setOnClickListener(this);
+
         }
 
         @Override
@@ -70,6 +70,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             if(clikListener!=null)
             {
                 clikListener.itemClicked(v,getPosition());
+
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.tifinnearme.priteshpatel.materialdrawer;
 
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -144,6 +145,12 @@ public class NavigationFragment extends Fragment implements MyAdapter.ClikListen
     @Override
     public void itemClicked(View view, int position) {
 
-        startActivity(new Intent(getActivity(), Subactivity.class));
+
+        DataList ob= myAdapter.data.get(position);
+        MainActivity.toolbar.setTitle(ob.iconName);
+        mDrawerLayout.closeDrawers();
+      //  startActivity(new Intent(getActivity(), Subactivity.class));
+
+
     }
 }
