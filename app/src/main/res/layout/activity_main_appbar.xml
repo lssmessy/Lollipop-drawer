@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -7,6 +8,23 @@
     <include
         android:id="@+id/app_bar"
         layout="@layout/app_bar"></include>
+    <it.neokree.materialtabs.MaterialTabHost
+        android:id="@+id/materialTabHost"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        app:iconColor="#FFFFFF"
+        app:primaryColor="@color/primaryColor"
+        app:accentColor="@color/accentColor"
+        app:hasIcons="true"/>
+
+    <android.support.v4.view.ViewPager
+        android:layout_below="@+id/materialTabHost"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/pager"></android.support.v4.view.ViewPager>
+
+
     <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -14,15 +32,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+        <include
+            android:id="@+id/fragment_my"
+            layout="@layout/fragment_my"></include>
 
-        </FrameLayout>
         <fragment
             android:id="@+id/drawer_fragment"
-            android:name="com.tifinnearme.priteshpatel.materialdrawer.NavigationFragment"
+            android:name="com.tifinnearme.priteshpatel.materialdrawer.material_test.NavigationFragment"
             android:layout_width="200dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"

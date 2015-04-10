@@ -5,23 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context=".MainActivity">
-      <!-- <include
+        <include
             android:id="@+id/app_bar"
-            layout="@layout/app_bar"></include>-->
+            layout="@layout/app_bar"></include>
 
-    <!--    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/app_bar"
-            android:text="@string/hello_world" />-->
-    </FrameLayout>
+        <com.tifinnearme.priteshpatel.materialdrawer.tabs.SlidingTabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></com.tifinnearme.priteshpatel.materialdrawer.tabs.SlidingTabLayout>
+        <android.support.v4.view.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/pager"></android.support.v4.view.ViewPager>
+    </LinearLayout>
 <fragment
     android:id="@+id/drawer_fragment"
-    android:name="com.tifinnearme.priteshpatel.materialdrawer.NavigationFragment"
+    android:name="com.tifinnearme.priteshpatel.materialdrawer.material_test.NavigationFragment"
     android:layout_width="240dp"
     android:layout_height="match_parent"
     android:layout_gravity="start"
