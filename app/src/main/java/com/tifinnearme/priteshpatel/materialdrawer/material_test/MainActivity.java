@@ -21,7 +21,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.tifinnearme.priteshpatel.materialdrawer.R;
 import com.tifinnearme.priteshpatel.materialdrawer.tabs.SlidingTabLayout;
 
@@ -39,6 +46,7 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main_appbar);
         NavigationFragment navFrag=(NavigationFragment)getSupportFragmentManager().findFragmentById(R.id.drawer_fragment);
         DrawerLayout drawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);//Get the object of drawer layout
@@ -209,8 +217,11 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
             if (bundle != null) {
                 textView.setText("Fragment is " + bundle.getInt("position"));
             }
+
             return layout;
         }
+
+
     }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {

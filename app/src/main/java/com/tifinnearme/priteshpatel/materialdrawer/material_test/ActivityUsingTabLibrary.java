@@ -1,5 +1,6 @@
 package com.tifinnearme.priteshpatel.materialdrawer.material_test;
 
+import android.app.Dialog;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,9 +19,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.tifinnearme.priteshpatel.materialdrawer.R;
+import com.tifinnearme.priteshpatel.materialdrawer.network.VolleySingleTon;
 
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
@@ -122,6 +132,30 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
                 if (bundle != null) {
                     textView.setText("Fragment is " + bundle.getInt("position"));
                 }
+                RequestQueue requestQueue= VolleySingleTon.getsInstance().getRequestQueue();
+                StringRequest stringRequest=new StringRequest(Request.Method.GET,"http://php.net/",new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Dialog dialog=new Dialog(getActivity());
+                        dialog.setContentView(R.layout.dialog_view);
+                        dialog.setTitle("Response");
+                        TextView text=(TextView)dialog.findViewById(R.id.text_dialog);
+                        text.setText(response);
+                        dialog.setCancelable(true);
+                       
+                        dialog.show();
+
+
+                        //Toast.makeText(getActivity(), "Response" + response, Toast.LENGTH_LONG).show();
+                    }
+                },new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity(),"Error"+error.getMessage(),Toast.LENGTH_LONG).show();
+
+                    }
+                });
+                requestQueue.add(stringRequest);
                 return layout;
             }
         }

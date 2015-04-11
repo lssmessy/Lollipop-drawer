@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tifinnearme.priteshpatel.materialdrawer" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:name=".material_test.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/tifin"
         android:label="@string/app_name"
@@ -26,6 +29,10 @@
         <activity
             android:name=".material_test.ActivityUsingTabLibrary"
             android:label="@string/title_activity_activity_using_tab_library" >
+        </activity>
+        <activity
+            android:name=".material_test.VectorTestActivity"
+            android:label="@string/title_activity_vector_test" >
         </activity>
     </application>
 
