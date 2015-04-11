@@ -25,5 +25,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.0.0'
     compile 'it.neokree:MaterialTabs:0.11'
     compile 'com.mcxiaoke.volley:library:1.0.+'
+    compile 'com.telly:mrvector:0.2.0'
+    compile 'org.twitter4j:twitter4j-core:4.0.2'
 
 }

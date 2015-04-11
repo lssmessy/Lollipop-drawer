@@ -123,6 +123,10 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
         {
             startActivity(new Intent(this,ActivityUsingTabLibrary.class));
         }
+        if(id==R.id.vectorView)
+        {
+            startActivity(new Intent(this,VectorTestActivity.class));
+        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -19,4 +19,9 @@
         android:orderInCategory="300"
         android:title="@string/action_tabs_using_library"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/vectorView"
+        android:orderInCategory="400"
+        android:title="@string/vectoView"
+        app:showAsAction="never" />
 </menu>

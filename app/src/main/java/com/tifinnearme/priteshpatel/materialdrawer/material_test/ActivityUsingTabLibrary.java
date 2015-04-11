@@ -30,6 +30,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.tifinnearme.priteshpatel.materialdrawer.R;
+import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentBoxOffice;
+import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentSearch;
+import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentUpcoming;
 import com.tifinnearme.priteshpatel.materialdrawer.network.VolleySingleTon;
 
 import it.neokree.materialtabs.MaterialTab;
@@ -42,6 +45,10 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
     private MaterialTabHost tabHost;
     private ViewPager pager;
     private ViewPagerAdapter viewPagerAdapter;
+    private static final int UPCOMING=0;
+    private static final int BOX_OFFICE=1;
+    private static final int SEARCH=2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,6 +169,7 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
 
         class ViewPagerAdapter extends FragmentStatePagerAdapter {
             int icons[]={R.drawable.home,R.drawable.account,R.drawable.magnify};
+            //int icons[]={R.drawable.android_logo,R.drawable.android_logo,R.drawable.android_logo};
 
             String[] tabs;
 
@@ -173,8 +181,24 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
 
             @Override
             public Fragment getItem(int position) {
-                MyFragment myFragment = MyFragment.getInstance(position);
-                return myFragment;
+                /*MyFragment myFragment = MyFragment.getInstance(position);
+                return myFragment;*/
+                Fragment fragment=null;
+                switch (position){
+                    case UPCOMING:
+                        fragment= FragmentUpcoming.newInstance("","");
+                        break;
+                    case BOX_OFFICE:
+                        fragment= FragmentBoxOffice.newInstance("","");
+
+                        break;
+                    case SEARCH:
+                        fragment= FragmentSearch.newInstance("", "");
+                        break;
+
+
+                }
+                return fragment;
             }
 
             @Override
