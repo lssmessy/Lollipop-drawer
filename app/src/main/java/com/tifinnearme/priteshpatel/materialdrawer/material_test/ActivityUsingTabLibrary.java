@@ -203,7 +203,7 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
 
             @Override
             public int getCount() {
-               /* return tabs.length;*/
+                //return tabs.length;
                 return icons.length;
             }
 

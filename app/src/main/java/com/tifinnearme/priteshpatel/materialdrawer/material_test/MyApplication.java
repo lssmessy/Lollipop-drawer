@@ -7,10 +7,13 @@ import android.content.Context;
  * Created by PRITESH on 11-04-2015.
  */
 public class MyApplication extends Application {
+/*
     public static final String API_KEY_CONSUMER="YJDVYWQBuitoJFsYC8msfU5wp";
     public static final String API_KEY_CONSUMER_SECRET="2HavxudsRow7oezzuBrmZ1A75bxRPEG5oiiBiG0hoBEWPQBoQ1";
     public static final String API_ACCESS_TOKEN="121477469-pMmEPh1Cz9OArQJy7NqjcUONBbNri1udV9Uz7X0n";
     public static final String API_ACCESS_TOKEN_SECRET="YoSrTbQxpgRCzVPZwExpcjPVg5UVr1UQ2i3SeWkhklV43";
+*/
+    public static final String API_KEY="ed5882c75fec0692581a1a95a9f26b11";
 
     private static MyApplication myInstance;
 

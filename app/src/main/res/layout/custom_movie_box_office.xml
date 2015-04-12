@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:layout_width="65dp"
+        android:layout_height="84dp"
+        android:id="@+id/movie_image"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"/>
+    <TextView
+        android:textColor="#000"
+        android:textSize="15dp"
+        android:id="@+id/movie_name"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="56dp"
+        android:text="This is dyummay text"
+        android:gravity="right"
+        android:layout_toRightOf="@+id/movie_image"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:paddingRight="10dp"/>
+    <TextView
+        android:layout_below="@id/movie_name"
+        android:textColor="#000"
+        android:textSize="10dp"
+        android:id="@+id/counts"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="56dp"
+        android:text="This is dyummay text"
+        android:gravity="right"
+        android:layout_toRightOf="@+id/movie_image"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:paddingRight="10dp"
+        />
+    <TextView
+        android:textStyle="bold"
+        android:layout_below="@id/counts"
+        android:textColor="#000"
+        android:textSize="10dp"
+        android:id="@+id/release_date"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="56dp"
+        android:text="This is dyummay text"
+        android:gravity="right"
+        android:layout_toRightOf="@+id/movie_image"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:padding="10dp"/>
+
+</RelativeLayout>

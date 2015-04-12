@@ -10,9 +10,9 @@
     <string name="drawer_open">Drawer opened</string>
     <string name="drawer_close">Drawer Closed</string>
     <string-array name="tabs">
-        <item name="tab1">Tab 1</item>
-        <item name="tab2">Tab 2</item>
-        <item name="tab3">Tab 3</item>
+        <item name="tab1">Home</item>
+        <item name="tab2">Upcoming</item>
+        <item name="tab3">Search</item>
 
     </string-array>
     <string name="title_activity_activity_using_tab_library">ActivityUsingTabLibrary</string>
