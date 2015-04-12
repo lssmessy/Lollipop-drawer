@@ -2,11 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-
+    android:background="@color/switch_thumb_normal_material_light"
     android:clickable="true">
     <ImageView
-        android:layout_width="65dp"
-        android:layout_height="84dp"
+        android:layout_width="75dp"
+        android:layout_height="90dp"
         android:id="@+id/movie_image"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"/>

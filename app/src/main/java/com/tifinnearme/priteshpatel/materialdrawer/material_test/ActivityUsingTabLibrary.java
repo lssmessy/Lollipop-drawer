@@ -80,6 +80,7 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
                             .setTabListener(this)
             );
         }
+
     }
 
 
@@ -171,11 +172,11 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
             int icons[]={R.drawable.home,R.drawable.account,R.drawable.magnify};
             //int icons[]={R.drawable.android_logo,R.drawable.android_logo,R.drawable.android_logo};
 
-            String[] tabs;
+            String[] tab_names;
 
             public ViewPagerAdapter(FragmentManager fm) {
                 super(fm);
-                tabs = getResources().getStringArray(R.array.tabs);
+                tab_names = getResources().getStringArray(R.array.tabs);
             }
 
 
@@ -203,8 +204,8 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
 
             @Override
             public int getCount() {
-                //return tabs.length;
-                return icons.length;
+             //   return tab_names.length;
+               return icons.length;
             }
 
             @Override
@@ -216,7 +217,7 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
             spannableString.setSpan(imageSpan,0,spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             return spannableString;*/
-                return tabs[position];
+                return tab_names[position];
             }
             private Drawable getIcon(int position){
                 return getResources().getDrawable(icons[position]);
