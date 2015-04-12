@@ -7,7 +7,7 @@
     <application
         android:name=".material_test.MyApplication"
         android:allowBackup="true"
-        android:icon="@drawable/tifin"
+        android:icon="@drawable/moviemania"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity

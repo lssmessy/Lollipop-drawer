@@ -102,7 +102,7 @@ public class FragmentBoxOffice extends Fragment {
                 return view;
     }
     public static String getRequestURL(int limit){
-        return API_URL+"?api_key="+ MyApplication.API_KEY+"&limit="+limit;
+        return API_URL+API_URL_POPULAR+"?api_key="+ MyApplication.API_KEY+"&limit="+limit;
     }
 
     public void sendJsonRequest(){

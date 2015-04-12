@@ -44,7 +44,7 @@ public class AdapterBoxOffice  extends RecyclerView.Adapter<AdapterBoxOffice.Vie
     public void onBindViewHolder(final ViewHolderBoxOffice holder, int position) {
         Movie currentMovie=listmovies.get(position);
         holder.movie_name.setText(currentMovie.getTitle());
-        //holder.counts.setText((int) currentMovie.getVotes());
+        holder.counts.setText("User ratings: "+currentMovie.getVotes());
         holder.release_date.setText(currentMovie.getReleaseDate());
         String imageUrl=currentMovie.getUrlthumbNail();
         if (imageUrl!=null){

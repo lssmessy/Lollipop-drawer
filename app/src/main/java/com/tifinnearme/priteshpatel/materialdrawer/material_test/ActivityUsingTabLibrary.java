@@ -139,7 +139,7 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
                 if (bundle != null) {
                     textView.setText("Fragment is " + bundle.getInt("position"));
                 }
-                RequestQueue requestQueue= VolleySingleTon.getsInstance().getRequestQueue();
+                /*RequestQueue requestQueue= VolleySingleTon.getsInstance().getRequestQueue();
                 StringRequest stringRequest=new StringRequest(Request.Method.GET,"http://php.net/",new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -158,11 +158,11 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
                 },new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity(),"Error"+error.getMessage(),Toast.LENGTH_LONG).show();
+
 
                     }
                 });
-                requestQueue.add(stringRequest);
+                requestQueue.add(stringRequest);*/
                 return layout;
             }
         }
