@@ -1,5 +1,7 @@
 package com.tifinnearme.priteshpatel.materialdrawer.pojo;
 
+import java.util.Date;
+
 /**
  * Created by PRITESH on 12-04-2015.
  */
@@ -7,13 +9,13 @@ public class Movie {
     private long id;
     private String title;
     private String urlthumbNail;
-    private String releaseDate;
+    private Date releaseDate;
     private long votes;
 
     public Movie(){
 
     }
-    public Movie(long id, String title,String urlthumbNail,String releaseDate,long votes){
+    public Movie(long id, String title,String urlthumbNail,Date releaseDate,long votes){
         this.id=id;
         this.title=title;
         this.urlthumbNail=urlthumbNail;
@@ -22,17 +24,19 @@ public class Movie {
 
     }
 
-    public void setReleaseDate(String releaseDate) {
+    public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public Date getReleaseDate() {
+        return releaseDate;
     }
 
     public void setVotes(long votes) {
         this.votes = votes;
     }
 
-    public String getReleaseDate() {
-        return releaseDate;
-    }
+
 
     public long getVotes() {
         return votes;

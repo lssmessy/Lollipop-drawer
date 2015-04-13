@@ -3,7 +3,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/switch_thumb_normal_material_light"
-    android:clickable="true">
+    android:clickable="true"
+    android:paddingBottom="10dp">
     <ImageView
         android:layout_width="75dp"
         android:layout_height="90dp"
@@ -24,26 +25,11 @@
         android:layout_toRightOf="@+id/movie_image"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:paddingRight="10dp"/>
-    <TextView
-        android:layout_below="@id/movie_name"
-        android:textColor="#000"
-        android:textSize="10dp"
-        android:id="@+id/counts"
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="56dp"
-        android:text="This is dyummay text"
-        android:gravity="right"
-        android:layout_toRightOf="@+id/movie_image"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:paddingRight="10dp"
-        />
+        android:layout_marginRight="10dp"/>
+
     <TextView
         android:textStyle="bold"
-        android:layout_below="@id/counts"
+        android:layout_below="@id/movie_name"
         android:textColor="#000"
         android:textSize="10dp"
         android:id="@+id/release_date"
@@ -56,6 +42,46 @@
         android:layout_toRightOf="@+id/movie_image"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:padding="10dp"/>
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        />
+    <TextView
+        android:layout_below="@id/release_date"
+        android:textColor="#000"
+        android:textSize="10dp"
+        android:id="@+id/counts"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="56dp"
+        android:text="This is dyummay text"
+        android:gravity="right"
+        android:layout_toRightOf="@+id/movie_image"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:visibility="gone"
+        />
+
+
+    <RatingBar
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratingBar"
+        style="@android:style/Widget.Holo.RatingBar.Small"
+        android:clickable="false"
+        android:rating="0.0"
+        android:progressTint="@color/accentColor"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:isIndicator="true"
+        android:numStars="0"
+        android:max="5"
+        android:layout_marginRight="10dp"
+
+        android:layout_below="@+id/release_date"
+        android:layout_alignParentEnd="true" />
+
 
 </RelativeLayout>

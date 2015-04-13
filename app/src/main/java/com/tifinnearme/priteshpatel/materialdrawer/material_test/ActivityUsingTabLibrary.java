@@ -1,45 +1,35 @@
 package com.tifinnearme.priteshpatel.materialdrawer.material_test;
 
-import android.app.Dialog;
-import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.tifinnearme.priteshpatel.materialdrawer.R;
 import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentBoxOffice;
 import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentSearch;
 import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentUpcoming;
-import com.tifinnearme.priteshpatel.materialdrawer.network.VolleySingleTon;
+import com.tifinnearme.priteshpatel.materialdrawer.interfaces.SortListener;
 
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 
-public class ActivityUsingTabLibrary extends ActionBarActivity  implements MaterialTabListener{
+public class ActivityUsingTabLibrary extends ActionBarActivity  implements MaterialTabListener,View.OnClickListener{
 
     private Toolbar toolbar;
     private MaterialTabHost tabHost;
@@ -48,6 +38,9 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
     private static final int UPCOMING=0;
     private static final int BOX_OFFICE=1;
     private static final int SEARCH=2;
+    private static final String SORT_BY_NAME_TAG="sortbyname";
+    private static final String SORT_BY_DATE_TAG="sortbydate";
+    private static final String SORT_BY_RATINGS_TAG="sortbyratings";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,20 +59,62 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
                 tabHost.setSelectedNavigationItem(position);
             }
         });
-        /*for (int i = 0; i < viewPagerAdapter.getCount(); i++) {
+        for (int i = 0; i < viewPagerAdapter.getCount(); i++) {
             tabHost.addTab(
                     tabHost.newTab()
                             .setText(viewPagerAdapter.getPageTitle(i))
                             .setTabListener(this)
             );
-        }*/
-        for (int i = 0; i < viewPagerAdapter.getCount(); i++) {
+        }
+        /*Change xml into icons before showing with icons*/
+       /* for (int i = 0; i < viewPagerAdapter.getCount(); i++) {
             tabHost.addTab(
                     tabHost.newTab()
                             .setIcon(viewPagerAdapter.getIcon(i))
                             .setTabListener(this)
             );
-        }
+        }*/
+
+        ImageView icon = new ImageView(this); // Create an icon
+        icon.setImageResource(R.drawable.plus);
+
+        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
+                .setContentView(icon).setBackgroundDrawable(R.drawable.plus_button_states)
+                .build();
+        ImageView sortByName = new ImageView(this); // Create an icon
+        sortByName.setImageResource(R.drawable.atoz);
+
+        ImageView sortByDate = new ImageView(this); // Create an icon
+        sortByDate.setImageResource(R.drawable.calendar);
+
+        ImageView sortByRatings = new ImageView(this); // Create an icon
+        sortByRatings.setImageResource(R.drawable.star);
+
+
+        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+        itemBuilder.setBackgroundDrawable(getResources().getDrawable(R.drawable.plus_button_states));
+
+        SubActionButton buttonsortByName = itemBuilder.setContentView(sortByName).build();
+        SubActionButton buttonsortByDate = itemBuilder.setContentView(sortByDate).build();
+        SubActionButton buttonsortByRatings = itemBuilder.setContentView(sortByRatings).build();
+
+
+        buttonsortByName.setTag(SORT_BY_NAME_TAG);
+        buttonsortByDate.setTag(SORT_BY_DATE_TAG);
+        buttonsortByRatings.setTag(SORT_BY_RATINGS_TAG);
+
+        buttonsortByName.setOnClickListener(this);
+        buttonsortByDate.setOnClickListener(this);
+        buttonsortByRatings.setOnClickListener(this);
+
+        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
+                .addSubActionView(buttonsortByName)
+                .addSubActionView(buttonsortByDate)
+                .addSubActionView(buttonsortByRatings)
+
+                .attachTo(actionButton)
+                .build();
+
 
     }
 
@@ -120,7 +155,43 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
         public void onTabUnselected (MaterialTab materialTab){
 
         }
-        public static class MyFragment extends Fragment {
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getTag().toString())
+        {
+            case SORT_BY_NAME_TAG:
+                //Toast.makeText(this,SORT_BY_NAME_TAG.toString(),Toast.LENGTH_SHORT).show();
+                Fragment fragment= (Fragment) viewPagerAdapter.instantiateItem(pager,pager.getCurrentItem());
+                if(fragment instanceof SortListener)
+                {
+                    ((SortListener) fragment).onSortByName();
+                }
+                break;
+            case SORT_BY_DATE_TAG:
+                //Toast.makeText(this,SORT_BY_DATE_TAG.toString(),Toast.LENGTH_SHORT).show();
+                Fragment date_frag= (Fragment) viewPagerAdapter.instantiateItem(pager, pager.getCurrentItem());
+                if(date_frag instanceof SortListener)
+                {
+                    ((SortListener) date_frag).onSortByDate();
+                }
+                break;
+            case SORT_BY_RATINGS_TAG:
+                //Toast.makeText(this,SORT_BY_RATINGS_TAG.toString(),Toast.LENGTH_SHORT).show();
+                Fragment rate_frag=(Fragment) viewPagerAdapter.instantiateItem(pager, pager.getCurrentItem());
+                if(rate_frag instanceof SortListener)
+                {
+                    ((SortListener) rate_frag).onSortByRatings();
+                }
+                break;
+
+
+        }
+
+    }
+
+    public static class MyFragment extends Fragment {
             private TextView textView;
 
             public static MyFragment getInstance(int position) {
@@ -169,14 +240,14 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
         }
 
         class ViewPagerAdapter extends FragmentStatePagerAdapter {
-            int icons[]={R.drawable.home,R.drawable.account,R.drawable.magnify};
+            //int icons[]={R.drawable.home,R.drawable.account,R.drawable.magnify};
             //int icons[]={R.drawable.android_logo,R.drawable.android_logo,R.drawable.android_logo};
 
             String[] tab_names;
 
             public ViewPagerAdapter(FragmentManager fm) {
                 super(fm);
-                tab_names = getResources().getStringArray(R.array.tabs);
+                tab_names = getResources().getStringArray(R.array.tabs_names);
             }
 
 
@@ -205,7 +276,8 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
             @Override
             public int getCount() {
              //   return tab_names.length;
-               return icons.length;
+               //return icons.length;
+                return tab_names.length;
             }
 
             @Override
@@ -219,9 +291,9 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
             return spannableString;*/
                 return tab_names[position];
             }
-            private Drawable getIcon(int position){
+           /* private Drawable getIcon(int position){
                 return getResources().getDrawable(icons[position]);
-            }
+            }*/
         }
 
 

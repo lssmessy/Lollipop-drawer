@@ -9,5 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         ></android.support.v7.widget.RecyclerView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/errorText"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:text="dummy text"
+        android:visibility="gone"
+        />
 
 </FrameLayout>

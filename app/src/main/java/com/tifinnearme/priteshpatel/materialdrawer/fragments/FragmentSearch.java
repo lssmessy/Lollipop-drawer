@@ -8,13 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tifinnearme.priteshpatel.materialdrawer.R;
+import com.tifinnearme.priteshpatel.materialdrawer.interfaces.SortListener;
+import com.tifinnearme.priteshpatel.materialdrawer.logging.L;
+import com.tifinnearme.priteshpatel.materialdrawer.material_test.MyApplication;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FragmentSearch#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentSearch extends Fragment {
+public class FragmentSearch extends Fragment implements SortListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -64,4 +67,20 @@ public class FragmentSearch extends Fragment {
     }
 
 
+    @Override
+    public void onSortByName() {
+        L.t(MyApplication.getContext(), "Box Search by name");
+    }
+
+    @Override
+    public void onSortByDate() {
+        L.t(MyApplication.getContext(), "Search page by Date");
+
+    }
+
+    @Override
+    public void onSortByRatings() {
+        L.t(MyApplication.getContext(), "Search page by Ratings");
+
+    }
 }

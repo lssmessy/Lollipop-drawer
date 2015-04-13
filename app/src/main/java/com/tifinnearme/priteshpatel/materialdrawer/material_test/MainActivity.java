@@ -1,36 +1,23 @@
 package com.tifinnearme.priteshpatel.materialdrawer.material_test;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.tifinnearme.priteshpatel.materialdrawer.R;
-import com.tifinnearme.priteshpatel.materialdrawer.tabs.SlidingTabLayout;
 
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
@@ -75,20 +62,20 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
                 tabHost.setSelectedNavigationItem(position);
             }
         });
-        /*for (int i = 0; i < viewPagerAdapter.getCount(); i++) {
+        for (int i = 0; i < viewPagerAdapter.getCount(); i++) {
             tabHost.addTab(
                     tabHost.newTab()
                             .setText(viewPagerAdapter.getPageTitle(i))
                             .setTabListener(this)
             );
-        }*/
-        for (int i = 0; i < viewPagerAdapter.getCount(); i++) {
+        }
+        /*for (int i = 0; i < viewPagerAdapter.getCount(); i++) {
             tabHost.addTab(
                     tabHost.newTab()
                             .setIcon(viewPagerAdapter.getIcon(i))
                             .setTabListener(this)
             );
-        }
+        }*/
 
 
 
@@ -229,13 +216,13 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
     }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
-        int icons[]={R.drawable.home,R.drawable.account,R.drawable.magnify};
+        //int icons[]={R.drawable.home,R.drawable.account,R.drawable.magnify};
 
         String[] tabs;
 
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
-            tabs = getResources().getStringArray(R.array.tabs);
+            tabs = getResources().getStringArray(R.array.tabs_names);
         }
 
 
@@ -248,7 +235,8 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
         @Override
         public int getCount() {
         /*        return tabs.length;*/
-            return icons.length;
+          //  return icons.length;
+            return tabs.length;
         }
 
         @Override
@@ -262,9 +250,9 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
             return spannableString;*/
             return tabs[position];
         }
-        private Drawable getIcon(int position){
+        /*private Drawable getIcon(int position){
             return getResources().getDrawable(icons[position]);
-        }
+        }*/
     }
 
 

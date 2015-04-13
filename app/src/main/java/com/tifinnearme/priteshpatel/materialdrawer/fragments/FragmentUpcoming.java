@@ -8,15 +8,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.tifinnearme.priteshpatel.materialdrawer.R;
 import com.tifinnearme.priteshpatel.materialdrawer.adapters.AdapterBoxOffice;
+import com.tifinnearme.priteshpatel.materialdrawer.interfaces.SortListener;
 import com.tifinnearme.priteshpatel.materialdrawer.logging.L;
 import com.tifinnearme.priteshpatel.materialdrawer.material_test.MyApplication;
 import com.tifinnearme.priteshpatel.materialdrawer.network.VolleySingleTon;
@@ -26,16 +33,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
-import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.*;
-import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.*;
+import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.API_URL;
+import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.API_URL_UPCOMING;
+import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.IMAGE_URL;
+import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_POSTER;
+import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_TITLE;
+import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_VOTE_COUNT;
+import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.RELEASE_DATE;
+import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.RESULTS;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FragmentUpcoming#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentUpcoming extends Fragment {
+public class FragmentUpcoming extends Fragment implements SortListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -46,6 +63,8 @@ public class FragmentUpcoming extends Fragment {
     private RecyclerView recycler_movies_list;
     public ArrayList<Movie> movie_array=new ArrayList<>();
     private AdapterBoxOffice adapterBoxOffice;
+    private DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd") ;
+    private TextView errorText;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -92,7 +111,7 @@ public class FragmentUpcoming extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_upcoming, container, false);
-
+        errorText=(TextView)view.findViewById(R.id.errorText);
         recycler_movies_list=(RecyclerView)view.findViewById(R.id.movies_list);
         recycler_movies_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapterBoxOffice=new AdapterBoxOffice(getActivity());
@@ -111,6 +130,7 @@ public class FragmentUpcoming extends Fragment {
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
+                                errorText.setVisibility(View.GONE);
                                 movie_array=parSeJsonResponse(response);
                                 adapterBoxOffice.setMovieList(movie_array);
 
@@ -118,10 +138,35 @@ public class FragmentUpcoming extends Fragment {
                         },new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        handleVolleyErrors(error);
 
                     }
                 });
         requestQueue.add(request);
+    }
+    public void handleVolleyErrors(VolleyError error){
+        errorText.setVisibility(View.VISIBLE);
+        if(error instanceof TimeoutError ||error instanceof NoConnectionError)
+        {
+            errorText.setText("Please check you Internet connection. It may be slow or down right now!");
+        }
+        else if(error instanceof AuthFailureError)
+        {
+            errorText.setText("Oops..Facing Authentication error!");
+
+        }
+        else if(error instanceof ParseError)
+        {
+            errorText.setText("Oops..Facing Parsing error!");
+
+        }
+        else if(error instanceof ServerError)
+        {
+            errorText.setText("Oops..Facing Server error!");
+
+        }
+
+
     }
     public ArrayList<Movie> parSeJsonResponse(JSONObject response){
         ArrayList<Movie> movie_array=new ArrayList<>();
@@ -131,20 +176,22 @@ public class FragmentUpcoming extends Fragment {
 
             try {
                 if(response.has(RESULTS)) {
-                    StringBuilder data=new StringBuilder();
-                    long id=0;
-                    String title="";
-                    String image=null;
-                    String releaseDate=null;
-                    long public_count=0;
+
 
                     JSONArray resultsArray = response.getJSONArray(RESULTS);
                     for(int i=0; i<resultsArray.length(); i++){
+                        long id=0;
+                        String title="";
+                        String image=null;
+                        String releaseDate=null;
+                        long public_count=-1;
+
+
                         JSONObject jsonObject=resultsArray.getJSONObject(i);
                         title=jsonObject.getString(MOVIES_TITLE);
 
 
-                        if(!jsonObject.isNull(MOVIES_POSTER)) {
+                        if(!jsonObject.isNull(MOVIES_POSTER)&&jsonObject.has(MOVIES_POSTER)) {
                             boolean result=jsonObject.isNull(MOVIES_POSTER);
                             image = IMAGE_URL + jsonObject.getString(MOVIES_POSTER);
                         }
@@ -153,22 +200,33 @@ public class FragmentUpcoming extends Fragment {
 
                         }
                         id=jsonObject.getInt("id");
-
-                        releaseDate=jsonObject.getString(RELEASE_DATE);
-                        public_count=jsonObject.getInt(MOVIES_VOTE_COUNT);
+                        if(jsonObject.has(RELEASE_DATE)&&!jsonObject.isNull(RELEASE_DATE)) {
+                            releaseDate = jsonObject.getString(RELEASE_DATE);
+                        }else
+                        {
+                            releaseDate="NA";
+                        }
+                        if(jsonObject.has(MOVIES_VOTE_COUNT))
+                            public_count=jsonObject.getInt(MOVIES_VOTE_COUNT);
 
 
                         Movie movie=new Movie();
                         movie.setId(id);
                         movie.setTitle(title);
                         movie.setUrlthumbNail(image);
-                        movie.setReleaseDate("Release Date:"+releaseDate);
+                        Date date= null;
+                        try {
+                            date = dateFormat.parse(releaseDate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        movie.setReleaseDate(date);
                         movie.setVotes(public_count);
 
                         movie_array.add(movie);
 
                     }
-                    L.t(getActivity(), data.toString());
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -178,5 +236,21 @@ public class FragmentUpcoming extends Fragment {
     }
 
 
+    @Override
+    public void onSortByName() {
+        L.t(MyApplication.getContext(), "Box Upcoming by name");
+    }
+
+    @Override
+    public void onSortByDate() {
+        L.t(MyApplication.getContext(), "Upcoming by Date");
+
+    }
+
+    @Override
+    public void onSortByRatings() {
+        L.t(MyApplication.getContext(), "Upcoming by Ratings");
+
+    }
 }
 
