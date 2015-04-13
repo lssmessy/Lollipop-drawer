@@ -28,6 +28,7 @@ import com.tifinnearme.priteshpatel.materialdrawer.logging.L;
 import com.tifinnearme.priteshpatel.materialdrawer.material_test.MyApplication;
 import com.tifinnearme.priteshpatel.materialdrawer.network.VolleySingleTon;
 import com.tifinnearme.priteshpatel.materialdrawer.pojo.Movie;
+import com.tifinnearme.priteshpatel.materialdrawer.pojo.MovieSorter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,6 +66,7 @@ public class FragmentUpcoming extends Fragment implements SortListener {
     private AdapterBoxOffice adapterBoxOffice;
     private DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd") ;
     private TextView errorText;
+    private MovieSorter movieSorter=new MovieSorter();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -239,17 +241,23 @@ public class FragmentUpcoming extends Fragment implements SortListener {
     @Override
     public void onSortByName() {
         L.t(MyApplication.getContext(), "Box Upcoming by name");
+        movieSorter.searchMovieByName(movie_array);
+        adapterBoxOffice.notifyDataSetChanged();
     }
 
     @Override
     public void onSortByDate() {
-        L.t(MyApplication.getContext(), "Upcoming by Date");
+        L.t(MyApplication.getContext(), "Sorting by Date");
+        movieSorter.searchMovieByDate(movie_array);
+        adapterBoxOffice.notifyDataSetChanged();
 
     }
 
     @Override
     public void onSortByRatings() {
-        L.t(MyApplication.getContext(), "Upcoming by Ratings");
+        L.t(MyApplication.getContext(), "Sorting by Ratings");
+        movieSorter.searchMovieByRatings(movie_array);
+        adapterBoxOffice.notifyDataSetChanged();
 
     }
 }

@@ -251,13 +251,18 @@ public class FragmentBoxOffice extends Fragment implements SortListener {
 
     @Override
     public void onSortByDate() {
-        L.t(MyApplication.getContext(), "Popular by Date");
+
+        L.t(MyApplication.getContext(), "Sorting by Date");
+        movieSorter.searchMovieByDate(movie_array);
+        adapterBoxOffice.notifyDataSetChanged();
 
     }
 
     @Override
     public void onSortByRatings() {
-        L.t(MyApplication.getContext(), "Popular by Ratings");
+        L.t(MyApplication.getContext(), "Sorting by Ratings");
+        movieSorter.searchMovieByRatings(movie_array);
+        adapterBoxOffice.notifyDataSetChanged();
 
     }
 }

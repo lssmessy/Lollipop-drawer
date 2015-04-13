@@ -22,10 +22,9 @@
         android:layout_marginLeft="56dp"
         android:text="This is dyummay text"
         android:gravity="right"
-        android:layout_toRightOf="@+id/movie_image"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginRight="10dp"
+        android:layout_toEndOf="@+id/movie_image" />
 
     <TextView
         android:textStyle="bold"

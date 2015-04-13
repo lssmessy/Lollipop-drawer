@@ -11,7 +11,7 @@
     <string name="drawer_close">Drawer Closed</string>
     <string-array name="tabs_names">
         <item name="tab1">Upcoming</item>
-        <item name="tab2">Popular</item>
+        <item name="tab2">Now Playing</item>
         <item name="tab3">Search</item>
 
     </string-array>

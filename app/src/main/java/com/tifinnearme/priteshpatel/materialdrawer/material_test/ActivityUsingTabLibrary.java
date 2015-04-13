@@ -41,6 +41,7 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
     private static final String SORT_BY_NAME_TAG="sortbyname";
     private static final String SORT_BY_DATE_TAG="sortbydate";
     private static final String SORT_BY_RATINGS_TAG="sortbyratings";
+    private FloatingActionMenu actionMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,7 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
         icon.setImageResource(R.drawable.plus);
 
         FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
-                .setContentView(icon).setBackgroundDrawable(R.drawable.plus_button_states)
+                .setContentView(icon) .setBackgroundDrawable(R.drawable.plus_button_states)
                 .build();
         ImageView sortByName = new ImageView(this); // Create an icon
         sortByName.setImageResource(R.drawable.atoz);
@@ -107,7 +108,7 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
         buttonsortByDate.setOnClickListener(this);
         buttonsortByRatings.setOnClickListener(this);
 
-        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
+        actionMenu = new FloatingActionMenu.Builder(this)
                 .addSubActionView(buttonsortByName)
                 .addSubActionView(buttonsortByDate)
                 .addSubActionView(buttonsortByRatings)
@@ -158,6 +159,7 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
 
     @Override
     public void onClick(View v) {
+        actionMenu.close(true);
 
         switch (v.getTag().toString())
         {
