@@ -1,6 +1,8 @@
 package com.tifinnearme.priteshpatel.materialdrawer.adapters;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.tifinnearme.priteshpatel.materialdrawer.R;
 import com.tifinnearme.priteshpatel.materialdrawer.animation.AnimationUtils;
+import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentBoxOffice;
+import com.tifinnearme.priteshpatel.materialdrawer.fragments.Movie_Details;
+import com.tifinnearme.priteshpatel.materialdrawer.logging.L;
+import com.tifinnearme.priteshpatel.materialdrawer.material_test.ActivityUsingTabLibrary;
+import com.tifinnearme.priteshpatel.materialdrawer.material_test.MainActivity;
+import com.tifinnearme.priteshpatel.materialdrawer.material_test.MyApplication;
 import com.tifinnearme.priteshpatel.materialdrawer.network.VolleySingleTon;
 import com.tifinnearme.priteshpatel.materialdrawer.pojo.Movie;
 
@@ -30,11 +38,14 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
     private ImageLoader imageLoader;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private int previousPosition = 0;
+    Context context;
+
 
     public AdapterBoxOffice(Context context) {
         inflater = LayoutInflater.from(context);
         singleTon = VolleySingleTon.getsInstance();
         imageLoader = singleTon.getImageLoader();
+        this.context=context;
     }
 
     @Override
@@ -52,6 +63,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
     @Override
     public void onBindViewHolder(final ViewHolderBoxOffice holder, int position) {
         Movie currentMovie = listmovies.get(position);
+
         holder.movie_name.setText(currentMovie.getTitle());
 
         if (currentMovie.getVotes() / 20.0F == 0.0) {
@@ -103,12 +115,12 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
         return listmovies.size();
     }
 
-    static class ViewHolderBoxOffice extends RecyclerView.ViewHolder {
+    static class ViewHolderBoxOffice extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView movie_poster;
         private TextView movie_name, counts, release_date;
         private RatingBar ratings;
-
+        private Context context;
         public ViewHolderBoxOffice(View itemView) {
             super(itemView);
             movie_poster = (ImageView) itemView.findViewById(R.id.movie_image);
@@ -116,6 +128,21 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
             counts = (TextView) itemView.findViewById(R.id.counts);
             ratings = (RatingBar) itemView.findViewById(R.id.ratingBar);
             release_date = (TextView) itemView.findViewById(R.id.release_date);
+            itemView.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+           ViewHolderBoxOffice vb=new ViewHolderBoxOffice(v);
+            L.t(MyApplication.getContext(), String.valueOf(vb.movie_name.getText()));
+
+            /*Dialog dialog=new Dialog(new AdapterBoxOffice(context).context);
+            //dialog.setContentView(R.layout.movie_details);
+
+            dialog.getWindow().setTitle(vb.movie_name.getText());
+            //dialog.setContentView(Fragmen);
+            dialog.show();*/
 
 
         }

@@ -1,8 +1,11 @@
 package com.tifinnearme.priteshpatel.materialdrawer.fragments;
 
 
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -49,13 +52,12 @@ import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKe
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.RELEASE_DATE;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.RESULTS;
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FragmentBoxOffice#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentBoxOffice extends Fragment implements SortListener {
+public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRefreshLayout.OnRefreshListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -70,6 +72,9 @@ public class FragmentBoxOffice extends Fragment implements SortListener {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private TextView errorText;
     private MovieSorter movieSorter = new MovieSorter();
+    public SwipeRefreshLayout refreshButton;
+
+    /*private RefreshData refreshData;*/
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -118,20 +123,23 @@ public class FragmentBoxOffice extends Fragment implements SortListener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_box_office, container, false);
         errorText = (TextView) view.findViewById(R.id.errorText);
+        refreshButton=(SwipeRefreshLayout)view.findViewById(R.id.refreshButton);
+        refreshButton.setColorSchemeColors(Color.CYAN,Color.RED,Color.YELLOW,Color.CYAN,Color.GREEN,Color.RED);
+        refreshButton.setOnRefreshListener(this);
         recycler_movies_list = (RecyclerView) view.findViewById(R.id.movies_list);
         recycler_movies_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapterBoxOffice = new AdapterBoxOffice(getActivity());
         recycler_movies_list.setAdapter(adapterBoxOffice);
 
-        if (savedInstanceState != null) {
+        sendJsonRequest();
+        /*if (savedInstanceState != null) {
             movie_array = savedInstanceState.getParcelableArrayList(STATE_MOVIES);
             adapterBoxOffice.setMovieList(movie_array);
         } else {
             sendJsonRequest();
 
-        }
-
-        return view;
+        }*/
+       return view;
     }
 
     public static String getRequestURL(int limit) {
@@ -139,6 +147,9 @@ public class FragmentBoxOffice extends Fragment implements SortListener {
     }
 
     public void sendJsonRequest() {
+
+
+
         JsonObjectRequest request =
                 new JsonObjectRequest(Request.Method.GET, getRequestURL(10),
                         (String) null,
@@ -275,4 +286,45 @@ public class FragmentBoxOffice extends Fragment implements SortListener {
         adapterBoxOffice.notifyDataSetChanged();
 
     }
+
+    @Override
+    public void onRefresh() {
+        L.t(getActivity(),"Refreshing");
+        //new RefreshData().execute();
+        sendJsonRequest();
+        if(refreshButton.isRefreshing())
+        {
+
+            refreshButton.setRefreshing(false);
+        }
+
+
+    }
+
+    class RefreshData extends AsyncTask<Void,Void,Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            sendJsonRequest();
+            adapterBoxOffice.notifyDataSetChanged();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(refreshButton.isRefreshing())
+            {
+
+                refreshButton.setRefreshing(false);
+            }
+        }
+    }
+
 }

@@ -1,22 +1,28 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context="com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentBoxOffice">
 
-    <!-- TODO: Update blank fragment layout -->
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/movies_list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refreshButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        ></android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent">
+        <!-- TODO: Update blank fragment layout -->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/movies_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
     <TextView
+        android:id="@+id/errorText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/errorText"
-        android:gravity="center"
         android:layout_gravity="center"
+        android:gravity="center"
         android:text="dummy text"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 </FrameLayout>

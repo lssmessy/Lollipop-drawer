@@ -1,24 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:clickable="true"
-    android:background="@drawable/custom_border"
-    android:padding="5dp">
-
-    <!--android:layout_marginBottom="@dimen/size_byte"
-    android:layout_marginTop="@dimen/size_byte"
-    android:layout_marginLeft="@dimen/size_word"
-    android:layout_marginRight="@dimen/size_word"
-    -->
-    <!--android:background="@color/switch_thumb_normal_material_light"-->
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ImageView
         android:layout_width="75dp"
         android:layout_height="90dp"
         android:id="@+id/movie_image"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        />
     <TextView
         android:textColor="#000"
         android:textSize="18dp"
@@ -29,10 +20,10 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="56dp"
         android:text="This is dyummay text"
-        android:gravity="right"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:layout_toEndOf="@+id/movie_image" />
+        android:gravity="left"
+
+        android:layout_below="@id/movie_image"
+         />
 
     <TextView
         android:textStyle="bold"
