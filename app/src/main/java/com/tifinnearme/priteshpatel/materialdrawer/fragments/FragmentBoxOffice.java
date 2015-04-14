@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.API_URL;
-import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.API_URL_POPULAR;
+import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.API_URL_NOW_PLAYING;
 import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.IMAGE_URL;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_POSTER;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_TITLE;
@@ -60,15 +60,16 @@ public class FragmentBoxOffice extends Fragment implements SortListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String STATE_MOVIES = "state of movies";
     private VolleySingleTon volleySingleTon;
     private RequestQueue requestQueue;
     private ImageLoader imageLoader;
     private RecyclerView recycler_movies_list;
-    public ArrayList<Movie> movie_array=new ArrayList<>();
+    public ArrayList<Movie> movie_array = new ArrayList<>();
     private AdapterBoxOffice adapterBoxOffice;
-    private DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd") ;
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private TextView errorText;
-    private MovieSorter movieSorter=new MovieSorter();
+    private MovieSorter movieSorter = new MovieSorter();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -104,9 +105,10 @@ public class FragmentBoxOffice extends Fragment implements SortListener {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        volleySingleTon=VolleySingleTon.getsInstance();
-        requestQueue=volleySingleTon.getRequestQueue();
-        sendJsonRequest();
+        volleySingleTon = VolleySingleTon.getsInstance();
+        requestQueue = volleySingleTon.getRequestQueue();
+
+        //sendJsonRequest();
 
     }
 
@@ -114,128 +116,136 @@ public class FragmentBoxOffice extends Fragment implements SortListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view=inflater.inflate(R.layout.fragment_box_office, container, false);
-        errorText=(TextView)view.findViewById(R.id.errorText);
-        recycler_movies_list=(RecyclerView)view.findViewById(R.id.movies_list);
+        View view = inflater.inflate(R.layout.fragment_box_office, container, false);
+        errorText = (TextView) view.findViewById(R.id.errorText);
+        recycler_movies_list = (RecyclerView) view.findViewById(R.id.movies_list);
         recycler_movies_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapterBoxOffice=new AdapterBoxOffice(getActivity());
+        adapterBoxOffice = new AdapterBoxOffice(getActivity());
         recycler_movies_list.setAdapter(adapterBoxOffice);
-        sendJsonRequest();
 
-                return view;
-    }
-    public static String getRequestURL(int limit){
-        return API_URL+API_URL_POPULAR+"?api_key="+ MyApplication.API_KEY+"&limit="+limit;
+        if (savedInstanceState != null) {
+            movie_array = savedInstanceState.getParcelableArrayList(STATE_MOVIES);
+            adapterBoxOffice.setMovieList(movie_array);
+        } else {
+            sendJsonRequest();
+
+        }
+
+        return view;
     }
 
-    public void sendJsonRequest(){
-        JsonObjectRequest request=
-                new JsonObjectRequest(Request.Method.GET,getRequestURL(10),
-                        (String)null,
+    public static String getRequestURL(int limit) {
+        return API_URL + API_URL_NOW_PLAYING + "?api_key=" + MyApplication.API_KEY + "&limit=" + limit;
+    }
+
+    public void sendJsonRequest() {
+        JsonObjectRequest request =
+                new JsonObjectRequest(Request.Method.GET, getRequestURL(10),
+                        (String) null,
                         new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                errorText.setVisibility(View.GONE);
-                movie_array=parSeJsonResponse(response);
-                adapterBoxOffice.setMovieList(movie_array);
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                errorText.setVisibility(View.GONE);
+                                movie_array = parSeJsonResponse(response);
+                                adapterBoxOffice.setMovieList(movie_array);
+                                L.t(getActivity(), movie_array.size() + "rows fetched");
 
-            }
-        },new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                handleVolleyErrors(error);
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        handleVolleyErrors(error);
 
-            }
-        });
+                    }
+                });
         requestQueue.add(request);
     }
-    public void handleVolleyErrors(VolleyError error){
+
+    public void handleVolleyErrors(VolleyError error) {
         errorText.setVisibility(View.VISIBLE);
-        if(error instanceof TimeoutError ||error instanceof NoConnectionError)
-        {
+        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
             errorText.setText("Please check you Internet connection. It may be slow or down right now!");
-        }
-        else if(error instanceof AuthFailureError)
-        {
+        } else if (error instanceof AuthFailureError) {
             errorText.setText("Oops..Facing Authentication error!");
 
-        }
-        else if(error instanceof ParseError)
-        {
+        } else if (error instanceof ParseError) {
             errorText.setText("Oops..Facing Parsing error!");
 
-        }
-        else if(error instanceof ServerError)
-        {
+        } else if (error instanceof ServerError) {
             errorText.setText("Oops..Facing Server error!");
 
         }
 
 
     }
-    public ArrayList<Movie> parSeJsonResponse(JSONObject response){
-        ArrayList<Movie> movie_array=new ArrayList<>();
-        if(response!=null || response.length()!=0)
-        {
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STATE_MOVIES, movie_array);
+    }
+
+    public ArrayList<Movie> parSeJsonResponse(JSONObject response) {
+        ArrayList<Movie> movie_array = new ArrayList<>();
+        if (response != null || response.length() != 0) {
 
 
-        try {
-            if(response.has(RESULTS)) {
+            try {
+                if (response.has(RESULTS)) {
 
 
-                JSONArray resultsArray = response.getJSONArray(RESULTS);
-                for(int i=0; i<resultsArray.length(); i++){
-                    long id=0;
-                    String title="";
-                    String image=null;
-                    String releaseDate=null;
-                    long public_count=-1;
+                    JSONArray resultsArray = response.getJSONArray(RESULTS);
+                    for (int i = 0; i < resultsArray.length(); i++) {
+                        long id = 0;
+                        String title = "";
+                        String image = null;
+                        String releaseDate = null;
+                        long public_count = -1;
 
 
-                    JSONObject jsonObject=resultsArray.getJSONObject(i);
-                    title=jsonObject.getString(MOVIES_TITLE);
+                        JSONObject jsonObject = resultsArray.getJSONObject(i);
+                        title = jsonObject.getString(MOVIES_TITLE);
 
 
-                    if(!jsonObject.isNull(MOVIES_POSTER)&&jsonObject.has(MOVIES_POSTER)) {
-                        boolean result=jsonObject.isNull(MOVIES_POSTER);
-                        image = IMAGE_URL + jsonObject.getString(MOVIES_POSTER);
+                        if (!jsonObject.isNull(MOVIES_POSTER) && jsonObject.has(MOVIES_POSTER)) {
+                            boolean result = jsonObject.isNull(MOVIES_POSTER);
+                            image = IMAGE_URL + jsonObject.getString(MOVIES_POSTER);
+                        } else {
+                            image = null;
+
+                        }
+                        id = jsonObject.getInt("id");
+                        if (jsonObject.has(RELEASE_DATE) && !jsonObject.isNull(RELEASE_DATE)) {
+                            releaseDate = jsonObject.getString(RELEASE_DATE);
+                        } else {
+                            releaseDate = "NA";
+                        }
+                        if (jsonObject.has(MOVIES_VOTE_COUNT))
+                            public_count = jsonObject.getInt(MOVIES_VOTE_COUNT);
+
+
+                        Movie movie = new Movie();
+                        movie.setId(id);
+                        movie.setTitle(title);
+                        movie.setUrlthumbNail(image);
+                        Date date = null;
+                        try {
+                            date = dateFormat.parse(releaseDate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        movie.setReleaseDate(date);
+                        movie.setVotes(public_count);
+
+                        movie_array.add(movie);
+
                     }
-                    else{
-                        image=null;
 
-                    }
-                    id=jsonObject.getInt("id");
-                    if(jsonObject.has(RELEASE_DATE)&&!jsonObject.isNull(RELEASE_DATE)) {
-                        releaseDate = jsonObject.getString(RELEASE_DATE);
-                    }else
-                    {
-                        releaseDate="NA";
-                    }
-                    if(jsonObject.has(MOVIES_VOTE_COUNT))
-                    public_count=jsonObject.getInt(MOVIES_VOTE_COUNT);
-
-
-                    Movie movie=new Movie();
-                    movie.setId(id);
-                    movie.setTitle(title);
-                    movie.setUrlthumbNail(image);
-                    Date date= null;
-                    try {
-                        date = dateFormat.parse(releaseDate);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    movie.setReleaseDate(date);
-                    movie.setVotes(public_count);
-
-                    movie_array.add(movie);
 
                 }
-
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
         }
         return movie_array;
     }

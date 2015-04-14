@@ -1,5 +1,7 @@
 package com.tifinnearme.priteshpatel.materialdrawer.material_test;
 
+import android.app.job.JobInfo;
+import android.content.ComponentName;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,13 +26,16 @@ import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentBoxOffice;
 import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentSearch;
 import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentUpcoming;
 import com.tifinnearme.priteshpatel.materialdrawer.interfaces.SortListener;
+import com.tifinnearme.priteshpatel.materialdrawer.services.MyService;
 
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
+import me.tatarka.support.job.JobScheduler;
 
 public class ActivityUsingTabLibrary extends ActionBarActivity  implements MaterialTabListener,View.OnClickListener{
 
+    private static final int JOB_ID = 100;
     private Toolbar toolbar;
     private MaterialTabHost tabHost;
     private ViewPager pager;
@@ -42,10 +47,13 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
     private static final String SORT_BY_DATE_TAG="sortbydate";
     private static final String SORT_BY_RATINGS_TAG="sortbyratings";
     private FloatingActionMenu actionMenu;
+    private JobScheduler mJobScheduler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mJobScheduler=JobScheduler.getInstance(this);
+        constructJob();
         setContentView(R.layout.activity_using_tab_library);
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
@@ -117,6 +125,20 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
                 .build();
 
 
+    }
+
+    public void constructJob(){
+        me.tatarka.support.job.JobInfo.Builder builder=new me.tatarka.support.job.JobInfo.Builder(JOB_ID,new ComponentName(this, MyService.class));
+        //JobInfo.Builder builder=new JobInfo.Builder(JOB_ID,new ComponentName(this, MyService.class));
+        //Name of the component which we want to call
+        //PersistableBundle persistableBundle=new PersistableBundle();
+        //store the state of activity across state changed i.e, screen rotate etc
+
+        builder.setPeriodic(7000);
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED);
+        builder.setPersisted(true);
+
+        mJobScheduler.schedule(builder.build());
     }
 
 

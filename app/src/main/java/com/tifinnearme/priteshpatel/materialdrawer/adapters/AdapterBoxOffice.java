@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.tifinnearme.priteshpatel.materialdrawer.R;
+import com.tifinnearme.priteshpatel.materialdrawer.animation.AnimationUtils;
 import com.tifinnearme.priteshpatel.materialdrawer.network.VolleySingleTon;
 import com.tifinnearme.priteshpatel.materialdrawer.pojo.Movie;
 
@@ -28,6 +29,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
     private VolleySingleTon singleTon;
     private ImageLoader imageLoader;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private int previousPosition = 0;
 
     public AdapterBoxOffice(Context context) {
         inflater = LayoutInflater.from(context);
@@ -52,7 +54,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
         Movie currentMovie = listmovies.get(position);
         holder.movie_name.setText(currentMovie.getTitle());
 
-        if (currentMovie.getVotes() / 20.0F== 0.0) {
+        if (currentMovie.getVotes() / 20.0F == 0.0) {
 
             holder.ratings.setRating(0.0F);
             holder.ratings.setAlpha(0.4F);
@@ -65,11 +67,16 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
         }
 
         if (currentMovie.getReleaseDate() != null) {
-            String formatedDate=dateFormat.format(currentMovie.getReleaseDate());
+            String formatedDate = dateFormat.format(currentMovie.getReleaseDate());
 
             holder.release_date.setText("Release Date: " + formatedDate);
         } else {
             holder.release_date.setText("NA");
+        }
+        if (position > previousPosition) {
+            AnimationUtils.animate(holder, true);
+        } else {
+            AnimationUtils.animate(holder, false);
         }
 
         String imageUrl = currentMovie.getUrlthumbNail();

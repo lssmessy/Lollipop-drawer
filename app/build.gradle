@@ -28,5 +28,6 @@ dependencies {
     compile 'com.telly:mrvector:0.2.0'
     compile 'org.twitter4j:twitter4j-core:4.0.2'
     compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
+    compile 'me.tatarka.support:jobscheduler:0.1.1'
 
 }

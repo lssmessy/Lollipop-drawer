@@ -4,6 +4,14 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <!--Allows using PowerManager WakeLocks to keep processor from sleeping or screen from dimming-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!--Allows applications to access information about networks-->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!--Allows an application to receive the ACTION_BOOT_COMPLETED that is broadcast after the system finishes booting. -->
+    <!-- If you don't request this permission, you will not receive the broadcast at that time.-->
+
     <application
         android:name=".material_test.MyApplication"
         android:allowBackup="true"
@@ -34,6 +42,10 @@
             android:name=".material_test.VectorTestActivity"
             android:label="@string/title_activity_vector_test" >
         </activity>
+        <service android:name=".services.MyService"
+            android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
+        <!--If a job service is declared in the manifest but not protected with this permission, that service will be ignored by the OS.-->
+             <!--Service is available to outside components-->
     </application>
 
 </manifest>

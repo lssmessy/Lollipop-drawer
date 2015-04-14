@@ -1,6 +1,7 @@
 package com.tifinnearme.priteshpatel.materialdrawer.logging;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -8,6 +9,9 @@ import android.widget.Toast;
  */
 public class L {
     public static void t(Context context,String message){
-        Toast.makeText(context,message+"",Toast.LENGTH_LONG).show();
+        Toast.makeText(context,message+"",Toast.LENGTH_SHORT).show();
+    }
+    public static void m(String message) {
+        Log.d("pritesh", "" + message);
     }
 }
