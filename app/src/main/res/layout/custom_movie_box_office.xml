@@ -3,8 +3,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:clickable="true"
-    android:background="@drawable/custom_border"
     android:padding="5dp">
+    <!--android:background="@drawable/custom_border"-->
+
 
     <!--android:layout_marginBottom="@dimen/size_byte"
     android:layout_marginTop="@dimen/size_byte"

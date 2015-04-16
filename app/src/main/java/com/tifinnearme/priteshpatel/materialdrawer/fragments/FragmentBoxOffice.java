@@ -289,14 +289,10 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
 
     @Override
     public void onRefresh() {
-        L.t(getActivity(),"Refreshing");
-        //new RefreshData().execute();
-        sendJsonRequest();
-        if(refreshButton.isRefreshing())
-        {
-
-            refreshButton.setRefreshing(false);
-        }
+        L.t(getActivity(),"Updating Now Playing list");
+        new RefreshData().execute();
+        //sendJsonRequest();
+        adapterBoxOffice.notifyDataSetChanged();
 
 
     }
@@ -312,7 +308,7 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
         @Override
         protected Void doInBackground(Void... params) {
             sendJsonRequest();
-            adapterBoxOffice.notifyDataSetChanged();
+
             return null;
         }
 

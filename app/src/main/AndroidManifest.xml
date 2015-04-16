@@ -37,6 +37,9 @@
         <activity
             android:name=".material_test.ActivityUsingTabLibrary"
             android:label="@string/title_activity_activity_using_tab_library" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".material_test.MainActivity" />
         </activity>
         <activity
             android:name=".material_test.VectorTestActivity"

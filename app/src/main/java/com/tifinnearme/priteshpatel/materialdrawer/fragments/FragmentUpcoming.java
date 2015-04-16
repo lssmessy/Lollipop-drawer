@@ -1,8 +1,11 @@
 package com.tifinnearme.priteshpatel.materialdrawer.fragments;
 
 
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -53,7 +56,7 @@ import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKe
  * Use the {@link FragmentUpcoming#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentUpcoming extends Fragment implements SortListener {
+public class FragmentUpcoming extends Fragment implements SortListener,SwipeRefreshLayout.OnRefreshListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -67,7 +70,7 @@ public class FragmentUpcoming extends Fragment implements SortListener {
     private DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd") ;
     private TextView errorText;
     private MovieSorter movieSorter=new MovieSorter();
-
+    public SwipeRefreshLayout refreshButtonUpcoming;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -114,6 +117,10 @@ public class FragmentUpcoming extends Fragment implements SortListener {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_upcoming, container, false);
         errorText=(TextView)view.findViewById(R.id.errorText);
+        refreshButtonUpcoming=(SwipeRefreshLayout)view.findViewById(R.id.refreshButtonUpcoming);
+        refreshButtonUpcoming.setColorSchemeColors(Color.BLUE,Color.RED,Color.YELLOW,Color.BLUE,Color.GREEN,Color.RED);
+        refreshButtonUpcoming.setOnRefreshListener(this);
+
         recycler_movies_list=(RecyclerView)view.findViewById(R.id.movies_list);
         recycler_movies_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapterBoxOffice=new AdapterBoxOffice(getActivity());
@@ -259,6 +266,41 @@ public class FragmentUpcoming extends Fragment implements SortListener {
         movieSorter.searchMovieByRatings(movie_array);
         adapterBoxOffice.notifyDataSetChanged();
 
+    }
+
+
+    @Override
+    public void onRefresh() {
+        L.t(getActivity(),"Updating Upcoming list");
+        new RefreshData().execute();
+        adapterBoxOffice.notifyDataSetChanged();
+
+
+    }
+    class RefreshData extends AsyncTask<Void,Void,Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            sendJsonRequest();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(refreshButtonUpcoming.isRefreshing())
+            {
+
+                refreshButtonUpcoming.setRefreshing(false);
+            }
+        }
     }
 }
 
