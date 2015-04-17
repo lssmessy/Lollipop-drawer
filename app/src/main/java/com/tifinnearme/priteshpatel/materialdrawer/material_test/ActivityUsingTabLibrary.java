@@ -58,7 +58,9 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
         setContentView(R.layout.activity_using_tab_library);
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
         tabHost = (MaterialTabHost) findViewById(R.id.materialTabHost);
         pager = (ViewPager) findViewById(R.id.pager);
         viewPagerAdapter=new ViewPagerAdapter(getSupportFragmentManager());

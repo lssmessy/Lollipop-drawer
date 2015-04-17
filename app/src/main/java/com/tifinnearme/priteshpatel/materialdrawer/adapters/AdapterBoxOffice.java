@@ -1,8 +1,7 @@
 package com.tifinnearme.priteshpatel.materialdrawer.adapters;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.support.v4.app.Fragment;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +14,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.tifinnearme.priteshpatel.materialdrawer.R;
 import com.tifinnearme.priteshpatel.materialdrawer.animation.AnimationUtils;
-import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentBoxOffice;
-import com.tifinnearme.priteshpatel.materialdrawer.fragments.Movie_Details;
+import com.tifinnearme.priteshpatel.materialdrawer.dialogs.CustomDialog;
+import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentUpcoming;
 import com.tifinnearme.priteshpatel.materialdrawer.logging.L;
-import com.tifinnearme.priteshpatel.materialdrawer.material_test.ActivityUsingTabLibrary;
-import com.tifinnearme.priteshpatel.materialdrawer.material_test.MainActivity;
-import com.tifinnearme.priteshpatel.materialdrawer.material_test.MyApplication;
 import com.tifinnearme.priteshpatel.materialdrawer.network.VolleySingleTon;
 import com.tifinnearme.priteshpatel.materialdrawer.pojo.Movie;
 
@@ -32,26 +28,30 @@ import java.util.ArrayList;
  * Created by PRITESH on 12-04-2015.
  */
 public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.ViewHolderBoxOffice> {
-    private ArrayList<Movie> listmovies = new ArrayList<>();
+    public ArrayList<Movie> listmovies = new ArrayList<>();
     private LayoutInflater inflater;
     private VolleySingleTon singleTon;
     private ImageLoader imageLoader;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private int previousPosition = 0;
     Context context;
-
+    private CustomDialog dialog;
+    public String imageUrl = null;
+     int pos=0;
+    private MovieClickListener movieClickListener;
 
     public AdapterBoxOffice(Context context) {
         inflater = LayoutInflater.from(context);
         singleTon = VolleySingleTon.getsInstance();
         imageLoader = singleTon.getImageLoader();
-        this.context=context;
+        this.context = context;
+
     }
 
     @Override
     public ViewHolderBoxOffice onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.custom_movie_box_office, parent, false);
-        ViewHolderBoxOffice viewHolderBoxOffice = new ViewHolderBoxOffice(view);
+        ViewHolderBoxOffice viewHolderBoxOffice = new ViewHolderBoxOffice(view, context);
         return viewHolderBoxOffice;
     }
 
@@ -90,8 +90,8 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
         } else {
             AnimationUtils.animate(holder, false);
         }
-
-        String imageUrl = currentMovie.getUrlthumbNail();
+        imageUrl = currentMovie.getUrlthumbNail();
+        //this.imageUrl=imageUrl;
         if (imageUrl != null) {
             imageLoader.get(imageUrl, new ImageLoader.ImageListener() {
                 @Override
@@ -108,6 +108,13 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
             holder.movie_poster.setImageResource(R.drawable.no_image);
         }
 
+        pos= (int) holder.getItemId();
+
+        //holder.movie_poster.setOnClickListener(this);
+
+    }
+    public void setMovieClickListener(MovieClickListener movieClickListener){
+            this.movieClickListener=movieClickListener;
     }
 
     @Override
@@ -115,36 +122,44 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
         return listmovies.size();
     }
 
-    static class ViewHolderBoxOffice extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+    class ViewHolderBoxOffice extends RecyclerView.ViewHolder implements View.OnClickListener{
+        //private ArrayList<Movie> listmovies = new ArrayList<>();
         private ImageView movie_poster;
         private TextView movie_name, counts, release_date;
         private RatingBar ratings;
         private Context context;
-        public ViewHolderBoxOffice(View itemView) {
+        private FragmentUpcoming fragmentUpcoming = new FragmentUpcoming();
+        CustomDialog dialog;
+        private Context mcotext;
+        private ImageLoader imageLoaderDialog;
+        private VolleySingleTon singleTon;
+        private ViewHolderBoxOffice vholder;
+        private Bitmap bitmap;
+
+        public ViewHolderBoxOffice(View itemView, Context context) {
             super(itemView);
             movie_poster = (ImageView) itemView.findViewById(R.id.movie_image);
             movie_name = (TextView) itemView.findViewById(R.id.movie_name);
             counts = (TextView) itemView.findViewById(R.id.counts);
             ratings = (RatingBar) itemView.findViewById(R.id.ratingBar);
             release_date = (TextView) itemView.findViewById(R.id.release_date);
+            this.mcotext = context;
             itemView.setOnClickListener(this);
 
         }
 
+
         @Override
         public void onClick(View v) {
-           ViewHolderBoxOffice vb=new ViewHolderBoxOffice(v);
-            L.t(MyApplication.getContext(), String.valueOf(vb.movie_name.getText()));
-
-            /*Dialog dialog=new Dialog(new AdapterBoxOffice(context).context);
-            //dialog.setContentView(R.layout.movie_details);
-
-            dialog.getWindow().setTitle(vb.movie_name.getText());
-            //dialog.setContentView(Fragmen);
-            dialog.show();*/
-
-
+            L.t(mcotext,"Clicked");
+        if(movieClickListener!=null)
+        {
+            movieClickListener.movieClicked(v,getPosition());
         }
+        }
+    }
+    public interface MovieClickListener{
+        public void movieClicked(View view, int position);
     }
 }

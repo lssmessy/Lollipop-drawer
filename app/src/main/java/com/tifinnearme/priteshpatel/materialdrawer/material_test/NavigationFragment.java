@@ -45,7 +45,7 @@ public class NavigationFragment extends Fragment implements MyAdapter.ClikListen
         super.onCreate(savedInstanceState);
 //        setUp(drawer_frag,drawerLayout,toolbar);
         mUserLearnedDrawer=Boolean.valueOf(readFromPrefs(getActivity(), KEY_USER_LEARNED_DRAWER, "false"));//false indicates user doesn't know about drawer
-        if(savedInstanceState!=null){
+        if(savedInstanceState==null){
             mFromSavedInstanceState=true;
         }
     }
@@ -118,6 +118,8 @@ public class NavigationFragment extends Fragment implements MyAdapter.ClikListen
         if(!mUserLearnedDrawer && !mFromSavedInstanceState)
         {
             mDrawerLayout.openDrawer(containerView);
+            this.mUserLearnedDrawer=true;
+            this.mFromSavedInstanceState=true;
         }
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
@@ -151,6 +153,12 @@ public class NavigationFragment extends Fragment implements MyAdapter.ClikListen
         mDrawerLayout.closeDrawers();
       //  startActivity(new Intent(getActivity(), Subactivity.class));
 
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
     }
 }
