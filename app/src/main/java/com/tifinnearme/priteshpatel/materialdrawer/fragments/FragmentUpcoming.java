@@ -2,8 +2,7 @@ package com.tifinnearme.priteshpatel.materialdrawer.fragments;
 
 
 import android.app.Dialog;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,7 +40,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,9 +49,12 @@ import java.util.Date;
 import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.API_URL;
 import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.API_URL_UPCOMING;
 import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.IMAGE_URL;
+import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.ID;
+import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_POSTER;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_TITLE;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_VOTE_COUNT;
+import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.OVERVIEW;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.RELEASE_DATE;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.RESULTS;
 
@@ -72,14 +73,17 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
     private ImageLoader imageLoader;
     private RecyclerView recycler_movies_list;
     public ArrayList<Movie> movie_array = new ArrayList<>();
+    public ArrayList<Movie> movie_array_for_id = new ArrayList<>();
     private AdapterBoxOffice adapterBoxOffice;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private TextView errorText;
     private MovieSorter movieSorter = new MovieSorter();
     public SwipeRefreshLayout refreshButtonUpcoming;
+    long id = 0;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    static String movie_overView="NOthing";
 
 
     /**
@@ -137,11 +141,45 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
         return view;
     }
 
+    private void sendJsonRequest_for_Id(long movie_id) {
+
+        JsonObjectRequest request =
+                new JsonObjectRequest(Request.Method.GET, getRequestURLforID(movie_id),
+                        (String) null,
+                        new Response.Listener<JSONObject>() {
+
+
+                            @Override
+                            public void onResponse(JSONObject response) {
+
+                                errorText.setVisibility(View.GONE);
+                                movie_overView = parSeJsonResponseforID(response);
+
+                                //adapterBoxOffice.setMovieList(movie_array_for_id);
+
+
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        handleVolleyErrors(error);
+
+                    }
+                });
+        requestQueue.add(request);
+    }
+
+
     public static String getRequestURL(int limit) {
         return API_URL + API_URL_UPCOMING + "?api_key=" + MyApplication.API_KEY + "&limit=" + limit;
     }
 
+    public static String getRequestURLforID(long id) {
+        return API_URL + "/" + id + "?api_key=" + MyApplication.API_KEY;
+    }
+
     public void sendJsonRequest() {
+
         JsonObjectRequest request =
                 new JsonObjectRequest(Request.Method.GET, getRequestURL(10),
                         (String) null,
@@ -152,6 +190,7 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
                                 movie_array = parSeJsonResponse(response);
                                 adapterBoxOffice.setMovieList(movie_array);
 
+
                             }
                         }, new Response.ErrorListener() {
                     @Override
@@ -160,6 +199,8 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
 
                     }
                 });
+
+
         requestQueue.add(request);
     }
 
@@ -184,15 +225,13 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
     public ArrayList<Movie> parSeJsonResponse(JSONObject response) {
         ArrayList<Movie> movie_array = new ArrayList<>();
         if (response != null || response.length() != 0) {
-
-
             try {
                 if (response.has(RESULTS)) {
 
 
                     JSONArray resultsArray = response.getJSONArray(RESULTS);
                     for (int i = 0; i < resultsArray.length(); i++) {
-                        long id = 0;
+
                         String title = "";
                         String image = null;
                         String releaseDate = null;
@@ -204,13 +243,13 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
 
 
                         if (!jsonObject.isNull(MOVIES_POSTER) && jsonObject.has(MOVIES_POSTER)) {
-                            boolean result = jsonObject.isNull(MOVIES_POSTER);
+
                             image = IMAGE_URL + jsonObject.getString(MOVIES_POSTER);
                         } else {
                             image = null;
 
                         }
-                        id = jsonObject.getInt("id");
+                        this.id = jsonObject.getInt("id");
                         if (jsonObject.has(RELEASE_DATE) && !jsonObject.isNull(RELEASE_DATE)) {
                             releaseDate = jsonObject.getString(RELEASE_DATE);
                         } else {
@@ -245,6 +284,40 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
         return movie_array;
     }
 
+    public String parSeJsonResponseforID(JSONObject response) {
+        String overView = "NOt available";
+
+        if (response != null || response.length() != 0) {
+            try {
+
+
+
+                overView = response.getString(OVERVIEW);
+
+                /*for(Movie m : movie_array){
+
+                    JSONObject job=response.getJSONObject(ID);
+
+                    System.out.print(job.getLong(ID));
+                    if(m.getId() ==job.getLong(ID) ){
+
+                        m.setOverview(overView);
+                    }
+                }*/
+
+                Movie movie = new Movie();
+
+                movie.setOverview(overView);
+            //return overView;
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return overView;
+    }
+
 
     @Override
     public void onSortByName() {
@@ -276,41 +349,44 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
         new RefreshData().execute();
         adapterBoxOffice.notifyDataSetChanged();
 
-
     }
 
     @Override
     public void movieClicked(View view, int position) {
+
+
         L.t(getActivity(), "Cliked at postiobn" + position);
-        /*CustomDialog dialog = new CustomDialog(getActivity());
-        dialog.setTitle(movie_array.get(position).getTitle());
-        dialog.show();*/
-
         Dialog dialog = new CustomDialog(getActivity(), android.R.style.Theme_Light);
-        //   dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setTitle(movie_array.get(position).getTitle());
-        /*imageLoader.get(movie_array.get(position).getUrlthumbNail(),new ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                CustomDialog.imageView.setImageBitmap(response.getBitmap());
-            }
+        String current = movie_array.get(position).getUrlthumbNail();
+        if (current != null) {
+            imageLoader.get(current, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    CustomDialog.imageView.setImageBitmap(response.getBitmap());
+                }
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
-            }
-        });*/
-        try {
-            Bitmap b = BitmapFactory.decodeStream((java.io.InputStream) new URL(movie_array.get(position).getUrlthumbNail()).getContent());
-            CustomDialog.imageView.setImageBitmap(b);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
+                }
+            });
+        } else if (current == null) {
+            CustomDialog.imageView.setImageResource(R.drawable.no_image);
         }
+        sendJsonRequest_for_Id(movie_array.get(position).getId());
+        if(movie_array.get(position).getOverview()!=null) {
+            CustomDialog.textView.setText("Story:" + movie_array.get(position).getOverview());
 
-        //dialog.setContentView(R.layout.custom_dialog);
+        }
+        else {
+            CustomDialog.textView.setText("Story:" + movie_overView);
+
+
+
+        }
         dialog.show();
+
     }
 
 

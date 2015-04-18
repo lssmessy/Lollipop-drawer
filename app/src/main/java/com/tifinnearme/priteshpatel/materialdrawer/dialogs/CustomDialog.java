@@ -3,6 +3,7 @@ package com.tifinnearme.priteshpatel.materialdrawer.dialogs;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +17,7 @@ public class CustomDialog extends Dialog {
     public static TextView textView;
     public CustomDialog(Context context,int theme) {
         super(context);
-       // requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
         View v=getLayoutInflater().inflate(R.layout.custom_dialog,null);
         imageView=(ImageView)v.findViewById(R.id.movie_detail_image);
         textView=(TextView)v.findViewById(R.id.movie_name);

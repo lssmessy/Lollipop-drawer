@@ -15,6 +15,8 @@ public class Movie implements Parcelable{
     private long id;
     private String title;
     private String urlthumbNail;
+    //private String cast;
+    private String overview;
     private Date releaseDate;
     private long votes;
 
@@ -26,15 +28,17 @@ public class Movie implements Parcelable{
         title=input.readString();
         releaseDate=new Date(input.readLong());
         votes=input.readLong();
+        overview=input.readString();
 
 
     }
-    public Movie(long id, String title,String urlthumbNail,Date releaseDate,long votes){
+    public Movie(long id, String title,String urlthumbNail,Date releaseDate,long votes,String overview){
         this.id=id;
         this.title=title;
         this.urlthumbNail=urlthumbNail;
         this.releaseDate=releaseDate;
         this.votes=votes;
+        this.overview=overview;
 
     }
 
@@ -50,7 +54,13 @@ public class Movie implements Parcelable{
         this.votes = votes;
     }
 
+    public String getOverview() {
+        return overview;
+    }
 
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
 
     public long getVotes() {
         return votes;
