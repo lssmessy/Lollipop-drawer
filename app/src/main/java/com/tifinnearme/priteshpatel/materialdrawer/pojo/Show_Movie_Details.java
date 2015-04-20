@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -36,24 +37,40 @@ import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKe
 public class Show_Movie_Details extends ActionBarActivity {
     Toolbar toolbar;
     private RequestQueue requestQueue;
-    private TextView errorText;
+    private TextView errorText,story;
+    private ImageView moview_poster;
     public ArrayList<Movie> movie_array_for_id = new ArrayList<>();
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sub);
-        toolbar=(Toolbar)findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
+    private long id;
+    private String overview=null;
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
+    public Show_Movie_Details(long id){
         VolleySingleTon volleySingleTon=VolleySingleTon.getsInstance();
         requestQueue=volleySingleTon.getRequestQueue();
-
+        sendJsonRequest_for_Id(id);
 
 
     }
+    public Show_Movie_Details(){
+
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.custom_dialog);
+        /*toolbar=(Toolbar)findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);*/
+
+        moview_poster= (ImageView) findViewById(R.id.movie_detail_image);
+        story= (TextView) findViewById(R.id.movie_name);
+
+        story.setText(overview);
+
+    }
+
 
 
     private void sendJsonRequest_for_Id(long movie_id) {
@@ -67,8 +84,9 @@ public class Show_Movie_Details extends ActionBarActivity {
                             @Override
                             public void onResponse(JSONObject response) {
 
-                                errorText.setVisibility(View.GONE);
-                                movie_array_for_id = parSeJsonResponseforID(response);
+//                                errorText.setVisibility(View.GONE);
+                                overview = parSeJsonResponseforID(response);
+
 
                                 //adapterBoxOffice.setMovieList(movie_array_for_id);
 
@@ -103,28 +121,29 @@ public class Show_Movie_Details extends ActionBarActivity {
 
 
     }
-    public ArrayList<Movie> parSeJsonResponseforID(JSONObject response) {
-        ArrayList<Movie> movie_array_for_id=new ArrayList<Movie>();
+    public String parSeJsonResponseforID(JSONObject response) {
+        //ArrayList<Movie> movie_array_for_id=new ArrayList<Movie>();
         String movie_overView=null;
         if (response != null || response.length() != 0) {
             try {
 
                 movie_overView=response.getString(OVERVIEW);
-                if(movie_overView!=null)
+                /*if(movie_overView!=null)
                 {
                     movie_overView = response.getString(OVERVIEW);
-                    Movie movie=new Movie();
+               *//*     Movie movie=new Movie();
                     movie.setOverview(movie_overView);
-                    movie_array_for_id.add(movie);
-                }
-                return movie_array_for_id;
+                    movie_array_for_id.add(movie);*//*
+                    //story.setText(response.getString(OVERVIEW));
+                }*/
+                return movie_overView;
 
             } catch (JSONException e) {
                 e.printStackTrace();
 
             }
         }
-        return movie_array_for_id;
+        return movie_overView;
     }
 
 

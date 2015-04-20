@@ -3,6 +3,7 @@ package com.tifinnearme.priteshpatel.materialdrawer.fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import com.tifinnearme.priteshpatel.materialdrawer.material_test.MyApplication;
 import com.tifinnearme.priteshpatel.materialdrawer.network.VolleySingleTon;
 import com.tifinnearme.priteshpatel.materialdrawer.pojo.Movie;
 import com.tifinnearme.priteshpatel.materialdrawer.pojo.MovieSorter;
+import com.tifinnearme.priteshpatel.materialdrawer.pojo.Show_Movie_Details;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -351,7 +353,14 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
     @Override
     public void movieClicked(View view, int position) {
 
-        final String[] overview = new String[1];
+
+        new Show_Movie_Details(movie_array.get(position).getId());
+        Intent i=new Intent(getActivity(),Show_Movie_Details.class);
+        //
+        startActivity(i);
+
+
+        /*final String[] overview = new String[1];
         //L.t(getActivity(), "Cliked at postiobn" + position);
         Dialog dialog = new CustomDialog(getActivity(), android.R.style.Theme_Light);
         dialog.setTitle(movie_array.get(position).getTitle());
@@ -401,7 +410,8 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
         new Overview_Data().execute();
 
         CustomDialog.textView.setText("Overview is: "+overview[0].toString());
-        dialog.show();
+        dialog.show();*/
+
 
     }
 
