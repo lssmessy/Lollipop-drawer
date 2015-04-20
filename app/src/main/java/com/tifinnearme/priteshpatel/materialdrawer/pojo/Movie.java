@@ -100,6 +100,7 @@ public class Movie implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeString(title);
+        dest.writeString(overview);
         dest.writeString(urlthumbNail);
         dest.writeLong(releaseDate.getTime());//Convert Date object to long
         dest.writeLong(votes);
