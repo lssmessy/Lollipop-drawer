@@ -118,7 +118,7 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
         }
         volleySingleTon = VolleySingleTon.getsInstance();
         requestQueue = volleySingleTon.getRequestQueue();
-
+        imageLoader = volleySingleTon.getImageLoader();
         //sendJsonRequest();
 
     }
