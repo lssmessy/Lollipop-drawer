@@ -1,6 +1,7 @@
 package com.tifinnearme.priteshpatel.materialdrawer.fragments;
 
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.tifinnearme.priteshpatel.materialdrawer.R;
 import com.tifinnearme.priteshpatel.materialdrawer.adapters.AdapterBoxOffice;
+import com.tifinnearme.priteshpatel.materialdrawer.dialogs.CustomDialog;
 import com.tifinnearme.priteshpatel.materialdrawer.interfaces.SortListener;
 import com.tifinnearme.priteshpatel.materialdrawer.logging.L;
 import com.tifinnearme.priteshpatel.materialdrawer.material_test.MyApplication;
@@ -49,6 +51,7 @@ import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.IM
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_POSTER;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_TITLE;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_VOTE_COUNT;
+import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.OVERVIEW;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.RELEASE_DATE;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.RESULTS;
 
@@ -57,7 +60,7 @@ import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKe
  * Use the {@link FragmentBoxOffice#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRefreshLayout.OnRefreshListener {
+public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRefreshLayout.OnRefreshListener,AdapterBoxOffice.MovieClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -73,6 +76,9 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
     private TextView errorText;
     private MovieSorter movieSorter = new MovieSorter();
     public SwipeRefreshLayout refreshButton;
+    static String movie_overView = "NOthing";
+    long id = 0;
+
 
     /*private RefreshData refreshData;*/
 
@@ -129,6 +135,7 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
         recycler_movies_list = (RecyclerView) view.findViewById(R.id.movies_list);
         recycler_movies_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapterBoxOffice = new AdapterBoxOffice(getActivity());
+        adapterBoxOffice.setMovieClickListener(this);
         recycler_movies_list.setAdapter(adapterBoxOffice);
 
         sendJsonRequest();
@@ -141,9 +148,86 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
         }*/
        return view;
     }
+    private void sendJsonRequest_for_Id(long movie_id, final int position) {
+
+        JsonObjectRequest request =
+                new JsonObjectRequest(Request.Method.GET, getRequestURLforID(movie_id),
+                        (String) null,
+                        new Response.Listener<JSONObject>() {
+
+
+                            @Override
+                            public void onResponse(JSONObject response) {
+
+                                errorText.setVisibility(View.GONE);
+                                movie_overView = parSeJsonResponseforID(response);
+                                Dialog dialog = new CustomDialog(getActivity(), android.R.style.Theme_Light);
+                                dialog.setTitle(movie_array.get(position).getTitle());
+                                String current = movie_array.get(position).getUrlthumbNail();
+                                if (current != null) {
+                                    imageLoader.get(current, new ImageLoader.ImageListener() {
+                                        @Override
+                                        public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                                            CustomDialog.imageView.setImageBitmap(response.getBitmap());
+                                        }
+
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+
+                                        }
+                                    });
+                                } else if (current == null) {
+                                    CustomDialog.imageView.setImageResource(R.drawable.no_image);
+                                }
+                                if (movie_overView != "null")
+                                    CustomDialog.textView.setText(movie_overView);
+                                else if(movie_overView=="null")
+                                    CustomDialog.textView.setText("Not available");
+
+                                dialog.show();
+
+                                //adapterBoxOffice.setMovieList(movie_array_for_id);
+
+
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        handleVolleyErrors(error);
+
+                    }
+                });
+        requestQueue.add(request);
+    }
+    public static String getRequestURLforID(long id) {
+        return API_URL + "/" + id + "?api_key=" + MyApplication.API_KEY;
+    }
+
 
     public static String getRequestURL(int limit) {
         return API_URL + API_URL_NOW_PLAYING + "?api_key=" + MyApplication.API_KEY + "&limit=" + limit;
+    }
+    public String parSeJsonResponseforID(JSONObject response) {
+
+        String movie_overView = null;
+        if (response != null || response.length() != 0) {
+            try {
+
+                movie_overView = response.getString(OVERVIEW);
+                if (movie_overView != null) {
+                    movie_overView = response.getString(OVERVIEW);
+                    /*Movie movie=new Movie();
+                    movie.setOverview(movie_overView);*/
+
+                }
+                return movie_overView;
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+
+            }
+        }
+        return movie_overView;
     }
 
     public void sendJsonRequest() {
@@ -295,6 +379,11 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
         adapterBoxOffice.notifyDataSetChanged();
 
 
+    }
+
+    @Override
+    public void movieClicked(View view, int position) {
+        sendJsonRequest_for_Id(movie_array.get(position).getId(), position);
     }
 
     class RefreshData extends AsyncTask<Void,Void,Void> {

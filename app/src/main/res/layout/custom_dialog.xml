@@ -29,7 +29,7 @@
             android:layout_marginRight="10dp"
             android:textColor="#000"
             android:textSize="18dp"
-            android:textStyle="bold|italic"
+            android:textStyle="bold|normal"
             android:text="Overview:" />
 
         <TextView

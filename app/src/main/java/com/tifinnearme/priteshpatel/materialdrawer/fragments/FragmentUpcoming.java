@@ -375,31 +375,9 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
     public void movieClicked(View view, int position) {
 
         final String[] overview = new String[1];
-        //sendJsonRequest_for_Id(movie_array.get(position).getId());
-        //L.t(getActivity(), "Cliked at postiobn" + position);
-        /*Dialog dialog = new CustomDialog(getActivity(), android.R.style.Theme_Light);
-        dialog.setTitle(movie_array.get(position).getTitle());
-        String current = movie_array.get(position).getUrlthumbNail();
-        if (current != null) {
-            imageLoader.get(current, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    CustomDialog.imageView.setImageBitmap(response.getBitmap());
-                }
 
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            });
-        } else if (current == null) {
-            CustomDialog.imageView.setImageResource(R.drawable.no_image);
-        }*/
         sendJsonRequest_for_Id(movie_array.get(position).getId(), position);
 
-        /*CustomDialog.textView.setText("Overview is: "+movie_overView);
-
-        dialog.show();*/
 
     }
 
