@@ -4,29 +4,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
+        <ImageView
+            android:id="@+id/movie_detail_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp" />
 
 
-            <ImageView
-                android:id="@+id/movie_detail_image"
-                android:layout_width="match_parent"
-                android:layout_height="480dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp" />
+        <TextView
+            android:id="@+id/overview"
 
-            <TextView
-                android:id="@+id/movie_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/movie_detail_image"
-                android:layout_marginLeft="5dp"
-                android:text="Dummy text" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/movie_detail_image"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="#000"
+            android:textSize="18dp"
+            android:textStyle="bold|italic"
+            android:text="Overview:" />
+
+        <TextView
+            android:id="@+id/movie_name"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/overview"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:text="Dummy text" />
 
 
-</RelativeLayout>
-    </ScrollView>
+    </RelativeLayout>
+</ScrollView>

@@ -3,7 +3,6 @@ package com.tifinnearme.priteshpatel.materialdrawer.dialogs;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +20,7 @@ public class CustomDialog extends Dialog {
         View v=getLayoutInflater().inflate(R.layout.custom_dialog,null);
         imageView=(ImageView)v.findViewById(R.id.movie_detail_image);
         textView=(TextView)v.findViewById(R.id.movie_name);
+
         setContentView(v);
 
     }

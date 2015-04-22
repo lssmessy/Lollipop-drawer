@@ -3,7 +3,6 @@ package com.tifinnearme.priteshpatel.materialdrawer.fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,7 +35,6 @@ import com.tifinnearme.priteshpatel.materialdrawer.material_test.MyApplication;
 import com.tifinnearme.priteshpatel.materialdrawer.network.VolleySingleTon;
 import com.tifinnearme.priteshpatel.materialdrawer.pojo.Movie;
 import com.tifinnearme.priteshpatel.materialdrawer.pojo.MovieSorter;
-import com.tifinnearme.priteshpatel.materialdrawer.pojo.Show_Movie_Details;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -147,7 +145,7 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
         return view;
     }
 
-    private void sendJsonRequest_for_Id(long movie_id) {
+    private void sendJsonRequest_for_Id(long movie_id, final int position) {
 
         JsonObjectRequest request =
                 new JsonObjectRequest(Request.Method.GET, getRequestURLforID(movie_id),
@@ -160,6 +158,30 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
 
                                 errorText.setVisibility(View.GONE);
                                 movie_overView = parSeJsonResponseforID(response);
+                                Dialog dialog = new CustomDialog(getActivity(), android.R.style.Theme_Light);
+                                dialog.setTitle(movie_array.get(position).getTitle());
+                                String current = movie_array.get(position).getUrlthumbNail();
+                                if (current != null) {
+                                    imageLoader.get(current, new ImageLoader.ImageListener() {
+                                        @Override
+                                        public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                                            CustomDialog.imageView.setImageBitmap(response.getBitmap());
+                                        }
+
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+
+                                        }
+                                    });
+                                } else if (current == null) {
+                                    CustomDialog.imageView.setImageResource(R.drawable.no_image);
+                                }
+                                if (movie_overView != "null")
+                                    CustomDialog.textView.setText(movie_overView);
+                                else if(movie_overView=="null")
+                                    CustomDialog.textView.setText("Not available");
+
+                                dialog.show();
 
                                 //adapterBoxOffice.setMovieList(movie_array_for_id);
 
@@ -264,11 +286,11 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
                             public_count = jsonObject.getInt(MOVIES_VOTE_COUNT);
                         Movie movie = new Movie();
                         movie.setId(id);
-                        if(id != 0) {
+                       /* if(id != 0) {
                             sendJsonRequest_for_Id(id);
                            // movie_array.get(i).setOverview(movie_overView);
                             //movie.setOverview();
-                        }
+                        }*/
 
                         movie.setTitle(title);
                         movie.setUrlthumbNail(image);
@@ -295,16 +317,15 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
 
     public String parSeJsonResponseforID(JSONObject response) {
 
-        String movie_overView=null;
+        String movie_overView = null;
         if (response != null || response.length() != 0) {
             try {
 
-                movie_overView=response.getString(OVERVIEW);
-                if(movie_overView!=null)
-                {
+                movie_overView = response.getString(OVERVIEW);
+                if (movie_overView != null) {
                     movie_overView = response.getString(OVERVIEW);
-                    Movie movie=new Movie();
-                    movie.setOverview(movie_overView);
+                    /*Movie movie=new Movie();
+                    movie.setOverview(movie_overView);*/
 
                 }
                 return movie_overView;
@@ -353,16 +374,10 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
     @Override
     public void movieClicked(View view, int position) {
 
-
-        new Show_Movie_Details(movie_array.get(position).getId());
-        Intent i=new Intent(getActivity(),Show_Movie_Details.class);
-        //
-        startActivity(i);
-
-
-        /*final String[] overview = new String[1];
+        final String[] overview = new String[1];
+        //sendJsonRequest_for_Id(movie_array.get(position).getId());
         //L.t(getActivity(), "Cliked at postiobn" + position);
-        Dialog dialog = new CustomDialog(getActivity(), android.R.style.Theme_Light);
+        /*Dialog dialog = new CustomDialog(getActivity(), android.R.style.Theme_Light);
         dialog.setTitle(movie_array.get(position).getTitle());
         String current = movie_array.get(position).getUrlthumbNail();
         if (current != null) {
@@ -379,44 +394,18 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
             });
         } else if (current == null) {
             CustomDialog.imageView.setImageResource(R.drawable.no_image);
-        }
-        //sendJsonRequest_for_Id(movie_array.get(position).getId());
+        }*/
+        sendJsonRequest_for_Id(movie_array.get(position).getId(), position);
 
-        JsonObjectRequest request =
-                new JsonObjectRequest(Request.Method.GET, getRequestURLforID(movie_array.get(position).getId()),
-                        (String) null,
-                        new Response.Listener<JSONObject>() {
+        /*CustomDialog.textView.setText("Overview is: "+movie_overView);
 
-
-                            @Override
-                            public void onResponse(JSONObject response) {
-
-                                errorText.setVisibility(View.GONE);
-                                overview[0] = parSeJsonResponseforID(response);
-
-                                //adapterBoxOffice.setMovieList(movie_array_for_id);
-
-
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        handleVolleyErrors(error);
-
-                    }
-                });
-        requestQueue.add(request);
-
-        new Overview_Data().execute();
-
-        CustomDialog.textView.setText("Overview is: "+overview[0].toString());
         dialog.show();*/
-
 
     }
 
     class Overview_Data extends AsyncTask<Void, Void, Void> {
-        ProgressDialog progressDialog=new ProgressDialog(getActivity());
+        ProgressDialog progressDialog = new ProgressDialog(getActivity());
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
