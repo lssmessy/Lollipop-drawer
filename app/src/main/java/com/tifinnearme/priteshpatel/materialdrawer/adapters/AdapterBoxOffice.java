@@ -16,7 +16,6 @@ import com.tifinnearme.priteshpatel.materialdrawer.R;
 import com.tifinnearme.priteshpatel.materialdrawer.animation.AnimationUtils;
 import com.tifinnearme.priteshpatel.materialdrawer.dialogs.CustomDialog;
 import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentUpcoming;
-import com.tifinnearme.priteshpatel.materialdrawer.logging.L;
 import com.tifinnearme.priteshpatel.materialdrawer.network.VolleySingleTon;
 import com.tifinnearme.priteshpatel.materialdrawer.pojo.Movie;
 
@@ -152,7 +151,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
 
         @Override
         public void onClick(View v) {
-            L.t(mcotext,"Clicked");
+
         if(movieClickListener!=null)
         {
             movieClickListener.movieClicked(v,getPosition());

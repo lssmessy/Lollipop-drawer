@@ -16,7 +16,7 @@
 
     </string-array>
     <string name="title_activity_activity_using_tab_library">Movies</string>
-    <string name="action_tabs_using_library">Actiontab with Library</string>
+    <string name="action_tabs_using_library">Movies</string>
     <string name="title_activity_vector_test">VectorTestActivity</string>
     <string name="vectoView">vector_view</string>
 </resources>

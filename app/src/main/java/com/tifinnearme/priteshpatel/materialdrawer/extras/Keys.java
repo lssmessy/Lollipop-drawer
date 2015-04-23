@@ -14,6 +14,8 @@ public class Keys {
         public static final String MOVIES_VOTE_COUNT="vote_count";
         public static final String MOVIES_POSTER="poster_path";
         public static final String RELEASE_DATE="release_date";
+        public static final String CAST="cast";
+        public static final String ACTOR_NAME="name";
 
 
 

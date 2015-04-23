@@ -15,16 +15,37 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
+            />
+
+
+        <TextView
+            android:id="@+id/cast"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/movie_detail_image"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp" />
+            android:layout_marginRight="10dp"
+            android:textColor="#000"
+            android:textSize="18dp"
+            android:textStyle="bold|normal"
+            android:text="Cast:" />
+        <TextView
+            android:id="@+id/actors"
 
-
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cast"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:text="Dummy text" />
         <TextView
             android:id="@+id/overview"
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/movie_detail_image"
+            android:layout_below="@id/actors"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:textColor="#000"

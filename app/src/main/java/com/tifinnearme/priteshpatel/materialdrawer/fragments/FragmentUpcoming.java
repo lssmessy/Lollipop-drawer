@@ -1,7 +1,6 @@
 package com.tifinnearme.priteshpatel.materialdrawer.fragments;
 
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -48,7 +47,10 @@ import java.util.Date;
 
 import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.API_URL;
 import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.API_URL_UPCOMING;
+import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.CREDITS;
 import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.IMAGE_URL;
+import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.ACTOR_NAME;
+import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.CAST;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_POSTER;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_TITLE;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_VOTE_COUNT;
@@ -82,7 +84,8 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
     private String mParam1;
     private String mParam2;
     static String movie_overView = "NOthing";
-
+    private ArrayList<String> credits = new ArrayList<>();
+    private StringBuilder stringBuilder=new StringBuilder();
 
     /**
      * Use this factory method to create a new instance of
@@ -146,6 +149,27 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
     }
 
     private void sendJsonRequest_for_Id(long movie_id, final int position) {
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+        final CustomDialog dialog = new CustomDialog(getActivity(), android.R.style.Theme_Light);
+        dialog.setTitle(movie_array.get(position).getTitle());
+
+        JsonObjectRequest jrequest = new JsonObjectRequest(Request.Method.GET, getRequestURLforCredits(movie_id), (String) null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                stringBuilder = parSeJsonResponseforCredits(response);
+                /*L.t(getActivity(), credits.toString());*/
+                CustomDialog.actors.setText(stringBuilder.toString());
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                handleVolleyErrors(error);
+            }
+        });
 
         JsonObjectRequest request =
                 new JsonObjectRequest(Request.Method.GET, getRequestURLforID(movie_id),
@@ -158,8 +182,6 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
 
                                 errorText.setVisibility(View.GONE);
                                 movie_overView = parSeJsonResponseforID(response);
-                                Dialog dialog = new CustomDialog(getActivity(), android.R.style.Theme_Light);
-                                dialog.setTitle(movie_array.get(position).getTitle());
                                 String current = movie_array.get(position).getUrlthumbNail();
                                 if (current != null) {
                                     imageLoader.get(current, new ImageLoader.ImageListener() {
@@ -178,9 +200,10 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
                                 }
                                 if (movie_overView != "null")
                                     CustomDialog.textView.setText(movie_overView);
-                                else if(movie_overView=="null")
+                                else if (movie_overView == "null")
                                     CustomDialog.textView.setText("Not available");
-
+                                //CustomDialog.actors.setText(credits.toString());
+                                progressDialog.dismiss();
                                 dialog.show();
 
                                 //adapterBoxOffice.setMovieList(movie_array_for_id);
@@ -194,7 +217,51 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
 
                     }
                 });
+
+
+        requestQueue.add(jrequest);
         requestQueue.add(request);
+
+
+    }
+
+    private StringBuilder parSeJsonResponseforCredits(JSONObject response) {
+        //ArrayList<String> credits = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        if (response != null || response.length() != 0) {
+            try {
+                JSONArray castArray = null;
+
+                castArray = response.getJSONArray(CAST);
+
+                if (castArray.length()!=0) {
+
+
+                    for (int i = 0; i < castArray.length(); i++) {
+                        JSONObject job_actor = castArray.getJSONObject(i);
+                        String actor = job_actor.getString(ACTOR_NAME);
+                        if (i == castArray.length() - 1)
+                            stringBuilder.append(actor + "");
+                        else
+                            stringBuilder.append(actor + ",");
+
+                    }
+                }
+                else {
+                    stringBuilder.append("Not available");
+                }
+                //L.t(getActivity(),stringBuilder.toString());
+                return stringBuilder;
+                //L.t(getActivity(),""+credits);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return stringBuilder;
     }
 
 
@@ -204,6 +271,10 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
 
     public static String getRequestURLforID(long id) {
         return API_URL + "/" + id + "?api_key=" + MyApplication.API_KEY;
+    }
+
+    public static String getRequestURLforCredits(long id) {
+        return API_URL + "/" + id + CREDITS + "?api_key=" + MyApplication.API_KEY;
     }
 
     public void sendJsonRequest() {
@@ -230,6 +301,8 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
 
 
         requestQueue.add(request);
+
+
     }
 
     public void handleVolleyErrors(VolleyError error) {
@@ -373,16 +446,22 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
 
     @Override
     public void movieClicked(View view, int position) {
-
-        final String[] overview = new String[1];
-
         sendJsonRequest_for_Id(movie_array.get(position).getId(), position);
+
+       // new Overview_Data().execute();
+
 
 
     }
 
-    class Overview_Data extends AsyncTask<Void, Void, Void> {
+    class Overview_Data extends AsyncTask<Integer, Void, Void> {
         ProgressDialog progressDialog = new ProgressDialog(getActivity());
+
+        @Override
+        protected Void doInBackground(Integer... params) {
+            sendJsonRequest_for_Id(movie_array.get(params[0]).getId(), params[0]);
+            return null;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -394,16 +473,6 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
 
         }
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
 
         @Override
         protected void onPostExecute(Void aVoid) {

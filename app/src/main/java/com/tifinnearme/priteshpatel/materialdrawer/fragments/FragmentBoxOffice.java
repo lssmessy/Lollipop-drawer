@@ -1,7 +1,7 @@
 package com.tifinnearme.priteshpatel.materialdrawer.fragments;
 
 
-import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -47,7 +47,10 @@ import java.util.Date;
 
 import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.API_URL;
 import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.API_URL_NOW_PLAYING;
+import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.CREDITS;
 import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.IMAGE_URL;
+import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.ACTOR_NAME;
+import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.CAST;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_POSTER;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_TITLE;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_VOTE_COUNT;
@@ -60,9 +63,10 @@ import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKe
  * Use the {@link FragmentBoxOffice#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRefreshLayout.OnRefreshListener,AdapterBoxOffice.MovieClickListener {
+public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRefreshLayout.OnRefreshListener, AdapterBoxOffice.MovieClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private StringBuilder stringBuilder = new StringBuilder();
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String STATE_MOVIES = "state of movies";
@@ -129,8 +133,8 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_box_office, container, false);
         errorText = (TextView) view.findViewById(R.id.errorText);
-        refreshButton=(SwipeRefreshLayout)view.findViewById(R.id.refreshButton);
-        refreshButton.setColorSchemeColors(Color.CYAN,Color.RED,Color.YELLOW,Color.CYAN,Color.GREEN,Color.RED);
+        refreshButton = (SwipeRefreshLayout) view.findViewById(R.id.refreshButton);
+        refreshButton.setColorSchemeColors(Color.CYAN, Color.RED, Color.YELLOW, Color.CYAN, Color.GREEN, Color.RED);
         refreshButton.setOnRefreshListener(this);
         recycler_movies_list = (RecyclerView) view.findViewById(R.id.movies_list);
         recycler_movies_list.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -146,9 +150,31 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
             sendJsonRequest();
 
         }*/
-       return view;
+        return view;
     }
+
     private void sendJsonRequest_for_Id(long movie_id, final int position) {
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+        final CustomDialog dialog = new CustomDialog(getActivity(), android.R.style.Theme_Light);
+        dialog.setTitle(movie_array.get(position).getTitle());
+
+        JsonObjectRequest jrequest = new JsonObjectRequest(Request.Method.GET, getRequestURLforCredits(movie_id), (String) null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                stringBuilder = parSeJsonResponseforCredits(response);
+                /*L.t(getActivity(), credits.toString());*/
+                CustomDialog.actors.setText(stringBuilder.toString());
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                handleVolleyErrors(error);
+            }
+        });
 
         JsonObjectRequest request =
                 new JsonObjectRequest(Request.Method.GET, getRequestURLforID(movie_id),
@@ -161,8 +187,6 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
 
                                 errorText.setVisibility(View.GONE);
                                 movie_overView = parSeJsonResponseforID(response);
-                                Dialog dialog = new CustomDialog(getActivity(), android.R.style.Theme_Light);
-                                dialog.setTitle(movie_array.get(position).getTitle());
                                 String current = movie_array.get(position).getUrlthumbNail();
                                 if (current != null) {
                                     imageLoader.get(current, new ImageLoader.ImageListener() {
@@ -181,9 +205,10 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
                                 }
                                 if (movie_overView != "null")
                                     CustomDialog.textView.setText(movie_overView);
-                                else if(movie_overView=="null")
+                                else if (movie_overView == "null")
                                     CustomDialog.textView.setText("Not available");
-
+                                //CustomDialog.actors.setText(credits.toString());
+                                progressDialog.dismiss();
                                 dialog.show();
 
                                 //adapterBoxOffice.setMovieList(movie_array_for_id);
@@ -197,8 +222,53 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
 
                     }
                 });
+
+
+        requestQueue.add(jrequest);
         requestQueue.add(request);
+
+
     }
+
+    private StringBuilder parSeJsonResponseforCredits(JSONObject response) {
+        //ArrayList<String> credits = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        if (response != null || response.length() != 0) {
+            try {
+                JSONArray castArray = null;
+
+                castArray = response.getJSONArray(CAST);
+
+                if (castArray.length()!=0) {
+
+
+                    for (int i = 0; i < castArray.length(); i++) {
+                        JSONObject job_actor = castArray.getJSONObject(i);
+                        String actor = job_actor.getString(ACTOR_NAME);
+                        if (i == castArray.length() - 1)
+                            stringBuilder.append(actor + "");
+                        else
+                            stringBuilder.append(actor + ",");
+
+                    }
+                }
+                else {
+                    stringBuilder.append("Not available");
+                }
+                //L.t(getActivity(),stringBuilder.toString());
+                return stringBuilder;
+                //L.t(getActivity(),""+credits);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return stringBuilder;
+    }
+
     public static String getRequestURLforID(long id) {
         return API_URL + "/" + id + "?api_key=" + MyApplication.API_KEY;
     }
@@ -207,6 +277,11 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
     public static String getRequestURL(int limit) {
         return API_URL + API_URL_NOW_PLAYING + "?api_key=" + MyApplication.API_KEY + "&limit=" + limit;
     }
+
+    public static String getRequestURLforCredits(long id) {
+        return API_URL + "/" + id + CREDITS + "?api_key=" + MyApplication.API_KEY;
+    }
+
     public String parSeJsonResponseforID(JSONObject response) {
 
         String movie_overView = null;
@@ -231,7 +306,6 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
     }
 
     public void sendJsonRequest() {
-
 
 
         JsonObjectRequest request =
@@ -373,7 +447,7 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
 
     @Override
     public void onRefresh() {
-        L.t(getActivity(),"Updating Now Playing list");
+        L.t(getActivity(), "Updating Now Playing list");
         new RefreshData().execute();
         //sendJsonRequest();
         adapterBoxOffice.notifyDataSetChanged();
@@ -386,7 +460,7 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
         sendJsonRequest_for_Id(movie_array.get(position).getId(), position);
     }
 
-    class RefreshData extends AsyncTask<Void,Void,Void> {
+    class RefreshData extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -404,8 +478,7 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if(refreshButton.isRefreshing())
-            {
+            if (refreshButton.isRefreshing()) {
 
                 refreshButton.setRefreshing(false);
             }
