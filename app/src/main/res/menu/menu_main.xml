@@ -24,4 +24,10 @@
         android:orderInCategory="400"
         android:title="@string/vectoView"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/tvShows"
+        android:orderInCategory="500"
+        android:title="@string/tv_shows"
+        app:showAsAction="never" />
+
 </menu>

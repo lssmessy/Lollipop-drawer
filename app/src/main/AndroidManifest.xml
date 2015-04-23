@@ -49,6 +49,13 @@
             android:name="com.tifinnearme.priteshpatel.materialdrawer.pojo.Show_Movie_Details"
             android:label="@string/title_activity_vector_test" >
         </activity>
+        <activity
+            android:name=".tvdetails.TvShows"
+            android:label="@string/tv_shows" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".material_test.MainActivity" />
+        </activity>
         <service android:name=".services.MyService"
             android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
         <!--If a job service is declared in the manifest but not protected with this permission, that service will be ignored by the OS.-->

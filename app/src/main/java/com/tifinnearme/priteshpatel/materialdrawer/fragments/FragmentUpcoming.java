@@ -438,9 +438,15 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
 
     @Override
     public void onRefresh() {
-        L.t(getActivity(), "Updating Upcoming list");
-        new RefreshData().execute();
-        adapterBoxOffice.notifyDataSetChanged();
+        if(new MyApplication().isInternetAvailable()==true) {
+            L.t(getActivity(), "Updating Upcoming");
+            new RefreshData().execute();
+            //sendJsonRequest();
+            adapterBoxOffice.notifyDataSetChanged();
+        }else
+        {
+            L.t(getActivity(),"No internet available");
+        }
 
     }
 

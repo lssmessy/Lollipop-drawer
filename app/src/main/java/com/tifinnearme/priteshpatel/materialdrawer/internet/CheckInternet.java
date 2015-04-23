@@ -13,7 +13,7 @@ public class CheckInternet{
         this.context=context;
     }
 private ConnectivityManager connectivityManager;
-    public boolean isInternetAvailable(){
+    /*public boolean isInternetAvailable(){
         connectivityManager=(ConnectivityManager)
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState()== NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState()== NetworkInfo.State.CONNECTED)
@@ -28,5 +28,5 @@ private ConnectivityManager connectivityManager;
         }
 
         return  false;
-    }
+    }*/
 }

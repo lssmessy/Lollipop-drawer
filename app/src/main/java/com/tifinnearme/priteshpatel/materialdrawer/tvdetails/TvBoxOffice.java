@@ -1,4 +1,4 @@
-package com.tifinnearme.priteshpatel.materialdrawer.fragments;
+package com.tifinnearme.priteshpatel.materialdrawer.tvdetails;
 
 
 import android.app.ProgressDialog;
@@ -45,8 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.API_URL;
-import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.API_URL_NOW_PLAYING;
+import static com.tifinnearme.priteshpatel.materialdrawer.tvdetails.Api_Links_Tv.*;
 import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.CREDITS;
 import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.IMAGE_URL;
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.ACTOR_NAME;
@@ -59,11 +58,11 @@ import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKe
 import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.RESULTS;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentBoxOffice#newInstance} factory method to
+ * A simple {@link android.support.v4.app.Fragment} subclass.
+ * Use the {@link TvBoxOffice#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRefreshLayout.OnRefreshListener, AdapterBoxOffice.MovieClickListener {
+public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshLayout.OnRefreshListener, AdapterBoxOffice.MovieClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private StringBuilder stringBuilder = new StringBuilder();
@@ -100,8 +99,8 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
      * @return A new instance of fragment FragmentBoxOffice.
      */
     // TODO: Rename and change types and number of parameters
-    public static FragmentBoxOffice newInstance(String param1, String param2) {
-        FragmentBoxOffice fragment = new FragmentBoxOffice();
+    public static TvBoxOffice newInstance(String param1, String param2) {
+        TvBoxOffice fragment = new TvBoxOffice();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -109,7 +108,7 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
         return fragment;
     }
 
-    public FragmentBoxOffice() {
+    public TvBoxOffice() {
         // Required empty public constructor
     }
 
@@ -278,7 +277,7 @@ public class FragmentBoxOffice extends Fragment implements SortListener, SwipeRe
 
 
     public static String getRequestURL(int limit) {
-        return API_URL + API_URL_NOW_PLAYING + "?api_key=" + MyApplication.API_KEY + "&limit=" + limit;
+        return API_URL + API_URL_POP + "?api_key=" + MyApplication.API_KEY + "&limit=" + limit;
     }
 
     public static String getRequestURLforCredits(long id) {

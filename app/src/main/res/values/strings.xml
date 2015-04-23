@@ -19,4 +19,5 @@
     <string name="action_tabs_using_library">Movies</string>
     <string name="title_activity_vector_test">VectorTestActivity</string>
     <string name="vectoView">vector_view</string>
+    <string name="tv_shows">Tv Shows</string>
 </resources>

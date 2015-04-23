@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tifinnearme.priteshpatel.materialdrawer.R;
+import com.tifinnearme.priteshpatel.materialdrawer.tvdetails.TvShows;
 
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
@@ -113,6 +114,10 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
         if(id==R.id.vectorView)
         {
             startActivity(new Intent(this,VectorTestActivity.class));
+        }
+        if(id==R.id.tvShows)
+        {
+            startActivity(new Intent(this,TvShows.class));
         }
 
         return super.onOptionsItemSelected(item);
