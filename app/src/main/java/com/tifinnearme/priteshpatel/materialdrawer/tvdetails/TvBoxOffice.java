@@ -26,14 +26,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.tifinnearme.priteshpatel.materialdrawer.R;
-import com.tifinnearme.priteshpatel.materialdrawer.adapters.AdapterBoxOffice;
-import com.tifinnearme.priteshpatel.materialdrawer.dialogs.CustomDialog;
 import com.tifinnearme.priteshpatel.materialdrawer.interfaces.SortListener;
 import com.tifinnearme.priteshpatel.materialdrawer.logging.L;
 import com.tifinnearme.priteshpatel.materialdrawer.material_test.MyApplication;
 import com.tifinnearme.priteshpatel.materialdrawer.network.VolleySingleTon;
-import com.tifinnearme.priteshpatel.materialdrawer.pojo.Movie;
-import com.tifinnearme.priteshpatel.materialdrawer.pojo.MovieSorter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,24 +41,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static com.tifinnearme.priteshpatel.materialdrawer.tvdetails.Api_Links_Tv.*;
-import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.CREDITS;
 import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.IMAGE_URL;
-import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.ACTOR_NAME;
-import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.CAST;
-import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_POSTER;
-import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_TITLE;
-import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.MOVIES_VOTE_COUNT;
-import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.OVERVIEW;
-import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.RELEASE_DATE;
-import static com.tifinnearme.priteshpatel.materialdrawer.extras.Keys.EndPointKeys.RESULTS;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  * Use the {@link TvBoxOffice#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshLayout.OnRefreshListener, AdapterBoxOffice.MovieClickListener {
+public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshLayout.OnRefreshListener, AdapterTv.MovieClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private StringBuilder stringBuilder = new StringBuilder();
@@ -73,11 +59,11 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
     private RequestQueue requestQueue;
     private ImageLoader imageLoader;
     private RecyclerView recycler_movies_list;
-    public ArrayList<Movie> movie_array = new ArrayList<>();
-    private AdapterBoxOffice adapterBoxOffice;
+    public ArrayList<TV> movie_array = new ArrayList<>();
+    private AdapterTv adapterBoxOffice;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private TextView errorText;
-    private MovieSorter movieSorter = new MovieSorter();
+    private TVSorter movieSorter = new TVSorter();
     public SwipeRefreshLayout refreshButton;
     static String movie_overView = "NOthing";
     long id = 0;
@@ -137,7 +123,7 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
         refreshButton.setOnRefreshListener(this);
         recycler_movies_list = (RecyclerView) view.findViewById(R.id.movies_list);
         recycler_movies_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapterBoxOffice = new AdapterBoxOffice(getActivity());
+        adapterBoxOffice = new AdapterTv(getActivity());
         adapterBoxOffice.setMovieClickListener(this);
         recycler_movies_list.setAdapter(adapterBoxOffice);
         if(new MyApplication().isInternetAvailable()==true) {
@@ -159,15 +145,15 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading...");
         progressDialog.show();
-        final CustomDialog dialog = new CustomDialog(getActivity(), android.R.style.Theme_Light);
+        final TV_CustomDialog dialog = new TV_CustomDialog(getActivity(), android.R.style.Theme_Light);
         dialog.setTitle(movie_array.get(position).getTitle());
-
+        final String formatedDate = dateFormat.format(movie_array.get(position).getReleaseDate());
         JsonObjectRequest jrequest = new JsonObjectRequest(Request.Method.GET, getRequestURLforCredits(movie_id), (String) null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 stringBuilder = parSeJsonResponseforCredits(response);
                 /*L.t(getActivity(), credits.toString());*/
-                CustomDialog.actors.setText(stringBuilder.toString());
+                TV_CustomDialog.actors.setText(stringBuilder.toString());
 
 
             }
@@ -194,7 +180,7 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
                                     imageLoader.get(current, new ImageLoader.ImageListener() {
                                         @Override
                                         public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                                            CustomDialog.imageView.setImageBitmap(response.getBitmap());
+                                            TV_CustomDialog.imageView.setImageBitmap(response.getBitmap());
                                         }
 
                                         @Override
@@ -203,13 +189,14 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
                                         }
                                     });
                                 } else if (current == null) {
-                                    CustomDialog.imageView.setImageResource(R.drawable.no_image);
+                                    TV_CustomDialog.imageView.setImageResource(R.drawable.no_image);
                                 }
                                 if (movie_overView != "null")
-                                    CustomDialog.textView.setText(movie_overView);
+                                    TV_CustomDialog.textView.setText(movie_overView);
                                 else if (movie_overView == "null")
-                                    CustomDialog.textView.setText("Not available");
-                                //CustomDialog.actors.setText(credits.toString());
+                                    TV_CustomDialog.textView.setText("Not available");
+                                //TV_CustomDialog.actors.setText(credits.toString());
+                                TV_CustomDialog.first_air_date.setText(""+formatedDate.toString());
                                 progressDialog.dismiss();
                                 dialog.show();
 
@@ -240,14 +227,14 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
             try {
                 JSONArray castArray = null;
 
-                castArray = response.getJSONArray(CAST);
+                castArray = response.getJSONArray(Keys_Tv.EndPointKeys.CAST);
 
                 if (castArray.length()!=0) {
 
 
                     for (int i = 0; i < castArray.length(); i++) {
                         JSONObject job_actor = castArray.getJSONObject(i);
-                        String actor = job_actor.getString(ACTOR_NAME);
+                        String actor = job_actor.getString(Keys_Tv.EndPointKeys.ACTOR_NAME);
                         if (i == castArray.length() - 1)
                             stringBuilder.append(actor + "");
                         else
@@ -272,16 +259,16 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
     }
 
     public static String getRequestURLforID(long id) {
-        return API_URL + "/" + id + "?api_key=" + MyApplication.API_KEY;
+        return Api_Links_Tv.API_URL + "/" + id + "?api_key=" + MyApplication.API_KEY;
     }
 
 
     public static String getRequestURL(int limit) {
-        return API_URL + API_URL_POP + "?api_key=" + MyApplication.API_KEY + "&limit=" + limit;
+        return Api_Links_Tv.API_URL+ Api_Links_Tv.API_POPULAR + "?api_key=" + MyApplication.API_KEY ;
     }
 
     public static String getRequestURLforCredits(long id) {
-        return API_URL + "/" + id + CREDITS + "?api_key=" + MyApplication.API_KEY;
+        return Api_Links_Tv.API_URL + "/" + id + Api_Links_Tv.CREDITS + "?api_key=" + MyApplication.API_KEY;
     }
 
     public String parSeJsonResponseforID(JSONObject response) {
@@ -290,9 +277,9 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
         if (response != null || response.length() != 0) {
             try {
 
-                movie_overView = response.getString(OVERVIEW);
+                movie_overView = response.getString(Keys_Tv.EndPointKeys.OVERVIEW);
                 if (movie_overView != null) {
-                    movie_overView = response.getString(OVERVIEW);
+                    movie_overView = response.getString(Keys_Tv.EndPointKeys.OVERVIEW);
                     /*Movie movie=new Movie();
                     movie.setOverview(movie_overView);*/
 
@@ -356,18 +343,15 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
         outState.putParcelableArrayList(STATE_MOVIES, movie_array);
     }
 
-    public ArrayList<Movie> parSeJsonResponse(JSONObject response) {
-        ArrayList<Movie> movie_array = new ArrayList<>();
+    public ArrayList<TV> parSeJsonResponse(JSONObject response) {
+        ArrayList<TV> movie_array = new ArrayList<>();
         if (response != null || response.length() != 0) {
-
-
             try {
-                if (response.has(RESULTS)) {
+                if (response.has(Keys_Tv.EndPointKeys.RESULTS)) {
 
-
-                    JSONArray resultsArray = response.getJSONArray(RESULTS);
+                    JSONArray resultsArray = response.getJSONArray(Keys_Tv.EndPointKeys.RESULTS);
                     for (int i = 0; i < resultsArray.length(); i++) {
-                        long id = 0;
+
                         String title = "";
                         String image = null;
                         String releaseDate = null;
@@ -375,28 +359,32 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
 
 
                         JSONObject jsonObject = resultsArray.getJSONObject(i);
-                        title = jsonObject.getString(MOVIES_TITLE);
+                        title = jsonObject.getString(Keys_Tv.EndPointKeys.MOVIES_TITLE);
 
 
-                        if (!jsonObject.isNull(MOVIES_POSTER) && jsonObject.has(MOVIES_POSTER)) {
-                            boolean result = jsonObject.isNull(MOVIES_POSTER);
-                            image = IMAGE_URL + jsonObject.getString(MOVIES_POSTER);
+                        if (!jsonObject.isNull(Keys_Tv.EndPointKeys.MOVIES_POSTER) && jsonObject.has(Keys_Tv.EndPointKeys.MOVIES_POSTER)) {
+
+                            image = IMAGE_URL + jsonObject.getString(Keys_Tv.EndPointKeys.MOVIES_POSTER);
                         } else {
                             image = null;
 
                         }
-                        id = jsonObject.getInt("id");
-                        if (jsonObject.has(RELEASE_DATE) && !jsonObject.isNull(RELEASE_DATE)) {
-                            releaseDate = jsonObject.getString(RELEASE_DATE);
+                        this.id = jsonObject.getInt("id");
+                        if (jsonObject.has(Keys_Tv.EndPointKeys.RELEASE_DATE) && !jsonObject.isNull(Keys_Tv.EndPointKeys.RELEASE_DATE)) {
+                            releaseDate = jsonObject.getString(Keys_Tv.EndPointKeys.RELEASE_DATE);
                         } else {
                             releaseDate = "NA";
                         }
-                        if (jsonObject.has(MOVIES_VOTE_COUNT))
-                            public_count = jsonObject.getInt(MOVIES_VOTE_COUNT);
-
-
-                        Movie movie = new Movie();
+                        if (jsonObject.has(Keys_Tv.EndPointKeys.MOVIES_VOTE_COUNT))
+                            public_count = jsonObject.getInt(Keys_Tv.EndPointKeys.MOVIES_VOTE_COUNT);
+                        TV movie = new TV();
                         movie.setId(id);
+                       /* if(id != 0) {
+                            sendJsonRequest_for_Id(id);
+                           // movie_array.get(i).setOverview(movie_overView);
+                            //movie.setOverview();
+                        }*/
+
                         movie.setTitle(title);
                         movie.setUrlthumbNail(image);
                         Date date = null;
@@ -411,7 +399,6 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
                         movie_array.add(movie);
 
                     }
-
 
                 }
             } catch (JSONException e) {
@@ -457,6 +444,8 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
         }else
         {
             L.t(getActivity(),"No internet available");
+            refreshButton.setRefreshing(false);
+
         }
 
     }

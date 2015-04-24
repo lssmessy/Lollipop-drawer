@@ -108,10 +108,10 @@ public class NavigationFragment extends Fragment implements MyAdapter.ClikListen
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                if(slideOffset<0.5)
+                /*if(slideOffset<0.5)
                 {
                     toolbar.setAlpha(1-slideOffset);
-                }
+                }*/
 
             }
         };

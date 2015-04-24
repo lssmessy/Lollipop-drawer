@@ -23,9 +23,7 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.tifinnearme.priteshpatel.materialdrawer.R;
-import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentBoxOffice;
 import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentSearch;
-import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentUpcoming;
 import com.tifinnearme.priteshpatel.materialdrawer.interfaces.SortListener;
 import com.tifinnearme.priteshpatel.materialdrawer.services.MyService;
 
@@ -35,7 +33,7 @@ import it.neokree.materialtabs.MaterialTabListener;
 import me.tatarka.support.job.JobScheduler;
 
 public class TvShows extends ActionBarActivity  implements MaterialTabListener,View.OnClickListener{
-
+    private FloatingActionButton actionButton;
     private static final int JOB_ID = 100;
     private Toolbar toolbar;
     private MaterialTabHost tabHost;
@@ -49,6 +47,7 @@ public class TvShows extends ActionBarActivity  implements MaterialTabListener,V
     private static final String SORT_BY_RATINGS_TAG="sortbyratings";
     private FloatingActionMenu actionMenu;
     private JobScheduler mJobScheduler;
+    private ImageView icon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,12 +86,13 @@ public class TvShows extends ActionBarActivity  implements MaterialTabListener,V
             );
         }*/
 
-        ImageView icon = new ImageView(this); // Create an icon
+        icon = new ImageView(this); // Create an icon
         icon.setImageResource(R.drawable.plus);
 
-        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
-                .setContentView(icon) .setBackgroundDrawable(R.drawable.plus_button_states)
+        actionButton = new FloatingActionButton.Builder(this)
+                .setContentView(icon).setBackgroundDrawable(R.drawable.plus_button_states)
                 .build();
+
         ImageView sortByName = new ImageView(this); // Create an icon
         sortByName.setImageResource(R.drawable.atoz);
 
@@ -105,7 +105,7 @@ public class TvShows extends ActionBarActivity  implements MaterialTabListener,V
 
         SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
         itemBuilder.setBackgroundDrawable(getResources().getDrawable(R.drawable.plus_button_states));
-
+        //icon.setImageResource(R.drawable.close);
         SubActionButton buttonsortByName = itemBuilder.setContentView(sortByName).build();
         SubActionButton buttonsortByDate = itemBuilder.setContentView(sortByDate).build();
         SubActionButton buttonsortByRatings = itemBuilder.setContentView(sortByRatings).build();
@@ -126,6 +126,17 @@ public class TvShows extends ActionBarActivity  implements MaterialTabListener,V
 
                 .attachTo(actionButton)
                 .build();
+        actionMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
+            @Override
+            public void onMenuOpened(FloatingActionMenu floatingActionMenu) {
+                icon.setImageResource(R.drawable.close);
+            }
+
+            @Override
+            public void onMenuClosed(FloatingActionMenu floatingActionMenu) {
+                icon.setImageResource(R.drawable.plus);
+            }
+        });
 
 
     }
@@ -242,30 +253,7 @@ public class TvShows extends ActionBarActivity  implements MaterialTabListener,V
                 if (bundle != null) {
                     textView.setText("Fragment is " + bundle.getInt("position"));
                 }
-                /*RequestQueue requestQueue= VolleySingleTon.getsInstance().getRequestQueue();
-                StringRequest stringRequest=new StringRequest(Request.Method.GET,"http://php.net/",new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Dialog dialog=new Dialog(getActivity());
-                        dialog.setContentView(R.layout.dialog_view);
-                        dialog.setTitle("Response");
-                        TextView text=(TextView)dialog.findViewById(R.id.text_dialog);
-                        text.setText(response);
-                        dialog.setCancelable(true);
-                       
-                        dialog.show();
 
-
-                        //Toast.makeText(getActivity(), "Response" + response, Toast.LENGTH_LONG).show();
-                    }
-                },new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-
-                    }
-                });
-                requestQueue.add(stringRequest);*/
                 return layout;
             }
         }
@@ -278,7 +266,7 @@ public class TvShows extends ActionBarActivity  implements MaterialTabListener,V
 
             public ViewPagerAdapter(FragmentManager fm) {
                 super(fm);
-                tab_names = getResources().getStringArray(R.array.tabs_names);
+                tab_names = getResources().getStringArray(R.array.tv_tabs_names);
             }
 
 
@@ -292,7 +280,7 @@ public class TvShows extends ActionBarActivity  implements MaterialTabListener,V
                         fragment= TvUpcoming_Latest.newInstance("","");
                         break;
                     case BOX_OFFICE:
-                        fragment= FragmentBoxOffice.newInstance("","");
+                        fragment= TvBoxOffice.newInstance("","");
 
                         break;
                     case SEARCH:

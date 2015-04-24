@@ -26,14 +26,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.tifinnearme.priteshpatel.materialdrawer.R;
-import com.tifinnearme.priteshpatel.materialdrawer.adapters.AdapterBoxOffice;
-import com.tifinnearme.priteshpatel.materialdrawer.dialogs.CustomDialog;
 import com.tifinnearme.priteshpatel.materialdrawer.interfaces.SortListener;
 import com.tifinnearme.priteshpatel.materialdrawer.logging.L;
 import com.tifinnearme.priteshpatel.materialdrawer.material_test.MyApplication;
 import com.tifinnearme.priteshpatel.materialdrawer.network.VolleySingleTon;
 import com.tifinnearme.priteshpatel.materialdrawer.pojo.Movie;
-import com.tifinnearme.priteshpatel.materialdrawer.pojo.MovieSorter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,6 +53,7 @@ import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.IM
 public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRefreshLayout.OnRefreshListener, AdapterTv.MovieClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private VolleySingleTon volleySingleTon;
@@ -76,7 +74,7 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
     static String movie_overView = "NOthing";
     private ArrayList<String> credits = new ArrayList<>();
     private StringBuilder stringBuilder=new StringBuilder();
-
+    private ProgressDialog pdial;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -128,6 +126,10 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
         adapterBoxOffice = new AdapterTv(getActivity());
         adapterBoxOffice.setMovieClickListener(this);
         recycler_movies_list.setAdapter(adapterBoxOffice);
+        pdial=new ProgressDialog(getActivity());
+        pdial.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pdial.setMessage("Loading TV shows...");
+        pdial.show();
         sendJsonRequest();
         /*if(movie_array.size()!=0) {
             for (int i = 0; i < movie_array.size(); i++) {
@@ -142,15 +144,16 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading...");
         progressDialog.show();
-        final CustomDialog dialog = new CustomDialog(getActivity(), android.R.style.Theme_Light);
+        final TV_CustomDialog dialog = new TV_CustomDialog(getActivity(), R.style.cust_dialog);
         dialog.setTitle(movie_array.get(position).getTitle());
 
+        final String formatedDate = dateFormat.format(movie_array.get(position).getReleaseDate());
         JsonObjectRequest jrequest = new JsonObjectRequest(Request.Method.GET, getRequestURLforCredits(movie_id), (String) null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 stringBuilder = parSeJsonResponseforCredits(response);
                 /*L.t(getActivity(), credits.toString());*/
-                CustomDialog.actors.setText(stringBuilder.toString());
+                TV_CustomDialog.actors.setText(stringBuilder.toString());
 
 
             }
@@ -177,7 +180,7 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
                                     imageLoader.get(current, new ImageLoader.ImageListener() {
                                         @Override
                                         public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                                            CustomDialog.imageView.setImageBitmap(response.getBitmap());
+                                            TV_CustomDialog.imageView.setImageBitmap(response.getBitmap());
                                         }
 
                                         @Override
@@ -186,13 +189,14 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
                                         }
                                     });
                                 } else if (current == null) {
-                                    CustomDialog.imageView.setImageResource(R.drawable.no_image);
+                                    TV_CustomDialog.imageView.setImageResource(R.drawable.no_image);
                                 }
                                 if (movie_overView != "null")
-                                    CustomDialog.textView.setText(movie_overView);
+                                    TV_CustomDialog.textView.setText(movie_overView);
                                 else if (movie_overView == "null")
-                                    CustomDialog.textView.setText("Not available");
-                                //CustomDialog.actors.setText(credits.toString());
+                                    TV_CustomDialog.textView.setText("Not available");
+                                //TV_CustomDialog.actors.setText(credits.toString());
+                                TV_CustomDialog.first_air_date.setText(""+formatedDate.toString());
                                 progressDialog.dismiss();
                                 dialog.show();
 
@@ -256,7 +260,7 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
 
 
     public static String getRequestURL(int limit) {
-        return Api_Links_Tv.API_URL + Api_Links_Tv.API_URL_POP + "?api_key=" + MyApplication.API_KEY ;
+        return Api_Links_Tv.API_URL + Api_Links_Tv.API_URL_TODAY + "?api_key=" + MyApplication.API_KEY ;
     }
 
     public static String getRequestURLforID(long id) {
@@ -269,6 +273,7 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
 
     public void sendJsonRequest() {
 
+
         JsonObjectRequest request =
                 new JsonObjectRequest(Request.Method.GET, getRequestURL(10),
                         (String) null,
@@ -278,7 +283,7 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
                                 errorText.setVisibility(View.GONE);
                                 movie_array = parSeJsonResponse(response);
                                 adapterBoxOffice.setMovieList(movie_array);
-
+                                pdial.dismiss();
 
                             }
                         }, new Response.ErrorListener() {
@@ -436,6 +441,8 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
         }else
         {
             L.t(getActivity(),"No internet available");
+            refreshButtonUpcoming.setRefreshing(false);
+
         }
 
     }

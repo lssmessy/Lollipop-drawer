@@ -15,6 +15,12 @@
         <item name="tab3">Search</item>
 
     </string-array>
+    <string-array name="tv_tabs_names">
+        <item name="tab1">Airing Today</item>
+        <item name="tab2">Popular</item>
+        <item name="tab3">Search</item>
+
+    </string-array>
     <string name="title_activity_activity_using_tab_library">Movies</string>
     <string name="action_tabs_using_library">Movies</string>
     <string name="title_activity_vector_test">VectorTestActivity</string>

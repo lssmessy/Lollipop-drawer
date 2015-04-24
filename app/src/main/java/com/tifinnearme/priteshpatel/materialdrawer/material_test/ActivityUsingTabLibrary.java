@@ -35,7 +35,8 @@ import it.neokree.materialtabs.MaterialTabListener;
 import me.tatarka.support.job.JobScheduler;
 
 public class ActivityUsingTabLibrary extends ActionBarActivity  implements MaterialTabListener,View.OnClickListener{
-
+    private ImageView icon;
+    private FloatingActionButton actionButton;
     private static final int JOB_ID = 100;
     private Toolbar toolbar;
     private MaterialTabHost tabHost;
@@ -87,10 +88,10 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
             );
         }*/
 
-        ImageView icon = new ImageView(this); // Create an icon
+        icon = new ImageView(this); // Create an icon
         icon.setImageResource(R.drawable.plus);
 
-        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
+        actionButton = new FloatingActionButton.Builder(this)
                 .setContentView(icon) .setBackgroundDrawable(R.drawable.plus_button_states)
                 .build();
         ImageView sortByName = new ImageView(this); // Create an icon
@@ -126,6 +127,17 @@ public class ActivityUsingTabLibrary extends ActionBarActivity  implements Mater
 
                 .attachTo(actionButton)
                 .build();
+        actionMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
+            @Override
+            public void onMenuOpened(FloatingActionMenu floatingActionMenu) {
+                icon.setImageResource(R.drawable.close);
+            }
+
+            @Override
+            public void onMenuClosed(FloatingActionMenu floatingActionMenu) {
+                icon.setImageResource(R.drawable.plus);
+            }
+        });
 
 
     }

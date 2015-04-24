@@ -1,4 +1,4 @@
-package com.tifinnearme.priteshpatel.materialdrawer.dialogs;
+package com.tifinnearme.priteshpatel.materialdrawer.tvdetails;
 
 import android.annotation.TargetApi;
 import android.app.Dialog;
@@ -13,19 +13,19 @@ import com.tifinnearme.priteshpatel.materialdrawer.R;
 /**
  * Created by pritesh.patel on 17-04-15.
  */
-public class CustomDialog extends Dialog {
+public class TV_CustomDialog extends Dialog {
     public static ImageView imageView;
     public static TextView textView,actors,first_air_date;
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public CustomDialog(Context context,int theme) {
+    public TV_CustomDialog(Context context, int theme) {
         super(context);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        View v=getLayoutInflater().inflate(R.layout.custom_dialog,null);
+        View v=getLayoutInflater().inflate(R.layout.custom_tv_dialog,null);
         imageView=(ImageView)v.findViewById(R.id.movie_detail_image);
         textView=(TextView)v.findViewById(R.id.movie_name);
         actors= (TextView)v.findViewById(R.id.actors);
-        //first_air_date= (TextView)v.findViewById(R.id.first_air_date);
+        first_air_date= (TextView)v.findViewById(R.id.first_air_date);
         setContentView(v);
 
     }

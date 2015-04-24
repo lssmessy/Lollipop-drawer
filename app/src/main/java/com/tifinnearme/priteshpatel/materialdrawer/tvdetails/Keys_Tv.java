@@ -9,6 +9,7 @@ public class Keys_Tv {
         public static final String RESULTS="results";
         public static final String MOVIES="movies";
         public static final String ID="id";
+        public static final String page="page";
         public static final String OVERVIEW="overview";
         public static final String MOVIES_TITLE="name";
         public static final String MOVIES_VOTE_COUNT="vote_count";

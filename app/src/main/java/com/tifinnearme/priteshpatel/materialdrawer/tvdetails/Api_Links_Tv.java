@@ -5,7 +5,8 @@ package com.tifinnearme.priteshpatel.materialdrawer.tvdetails;
  */
 public class Api_Links_Tv {
     public static String API_URL="http://api.themoviedb.org/3/tv";
-    public static final String API_URL_POP="/popular";
+    public static final String API_URL_TODAY="/airing_today";
+    public static final String API_POPULAR="/popular";
     public static final String API_URL_UPCOMING="/upcoming";
     public static final String API_URL_NOW_PLAYING="/now_playing";
     public static final String CREDITS="/credits";

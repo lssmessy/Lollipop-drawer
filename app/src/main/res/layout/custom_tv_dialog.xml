@@ -18,17 +18,42 @@
             android:layout_marginRight="5dp"
             android:background="@color/background_floating_material_light"
             android:layout_centerHorizontal="true"
+
             />
 
 
+        <TextView
+            android:id="@+id/air_date"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/movie_detail_image"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="#000"
+            android:textSize="18dp"
+            android:textStyle="bold|normal"
+            android:text="First Air Date:" />
+        <TextView
+            android:id="@+id/first_air_date"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="Not available"
+            android:layout_above="@+id/cast"
+            android:layout_toEndOf="@+id/air_date" />
         <TextView
             android:id="@+id/cast"
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/movie_detail_image"
+            android:layout_below="@id/air_date"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
             android:textColor="#000"
             android:textSize="18dp"
             android:textStyle="bold|normal"
@@ -42,7 +67,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="15dp"
-            android:text="Dummy text" />
+            android:text="Not available" />
         <TextView
             android:id="@+id/overview"
 
@@ -54,7 +79,7 @@
             android:textColor="#000"
             android:textSize="18dp"
             android:textStyle="bold|normal"
-            android:text="Overview:" />
+            android:text="Story:" />
 
         <TextView
             android:id="@+id/movie_name"
@@ -65,7 +90,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="15dp"
-            android:text="Dummy text" />
+            android:text="Not available" />
 
 
     </RelativeLayout>

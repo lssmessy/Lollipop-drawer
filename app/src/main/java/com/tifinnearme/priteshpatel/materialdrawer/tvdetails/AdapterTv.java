@@ -17,7 +17,6 @@ import com.tifinnearme.priteshpatel.materialdrawer.animation.AnimationUtils;
 import com.tifinnearme.priteshpatel.materialdrawer.dialogs.CustomDialog;
 import com.tifinnearme.priteshpatel.materialdrawer.fragments.FragmentUpcoming;
 import com.tifinnearme.priteshpatel.materialdrawer.network.VolleySingleTon;
-import com.tifinnearme.priteshpatel.materialdrawer.pojo.Movie;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -80,7 +79,7 @@ public class AdapterTv extends RecyclerView.Adapter<AdapterTv.ViewHolderBoxOffic
         if (currentMovie.getReleaseDate() != null) {
             String formatedDate = dateFormat.format(currentMovie.getReleaseDate());
 
-            holder.release_date.setText("Release Date: " + formatedDate);
+            holder.release_date.setText("First Air Date: " + formatedDate);
         } else {
             holder.release_date.setText("NA");
         }
