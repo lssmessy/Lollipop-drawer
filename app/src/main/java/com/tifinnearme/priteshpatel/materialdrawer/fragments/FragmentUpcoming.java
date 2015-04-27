@@ -80,6 +80,7 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
     private MovieSorter movieSorter = new MovieSorter();
     public SwipeRefreshLayout refreshButtonUpcoming;
     long id = 0;
+    private ProgressDialog pdial;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -138,6 +139,10 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
         adapterBoxOffice = new AdapterBoxOffice(getActivity());
         adapterBoxOffice.setMovieClickListener(this);
         recycler_movies_list.setAdapter(adapterBoxOffice);
+        pdial=new ProgressDialog(getActivity());
+        pdial.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pdial.setMessage("Loading Movies...");
+        pdial.show();
         sendJsonRequest();
         /*if(movie_array.size()!=0) {
             for (int i = 0; i < movie_array.size(); i++) {
@@ -288,6 +293,7 @@ public class FragmentUpcoming extends Fragment implements SortListener, SwipeRef
                                 errorText.setVisibility(View.GONE);
                                 movie_array = parSeJsonResponse(response);
                                 adapterBoxOffice.setMovieList(movie_array);
+                                pdial.dismiss();
 
 
                             }
