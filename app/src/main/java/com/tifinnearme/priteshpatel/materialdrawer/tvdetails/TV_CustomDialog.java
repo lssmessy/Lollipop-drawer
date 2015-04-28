@@ -15,7 +15,7 @@ import com.tifinnearme.priteshpatel.materialdrawer.R;
  */
 public class TV_CustomDialog extends Dialog {
     public static ImageView imageView;
-    public static TextView textView,actors,first_air_date,genres;
+    public static TextView textView,actors,first_air_date,genres,last_air_date;
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public TV_CustomDialog(Context context, int theme) {
         super(context);
@@ -26,6 +26,7 @@ public class TV_CustomDialog extends Dialog {
         textView=(TextView)v.findViewById(R.id.movie_name);
         actors= (TextView)v.findViewById(R.id.actors);
         first_air_date= (TextView)v.findViewById(R.id.first_air_date);
+        last_air_date= (TextView)v.findViewById(R.id.last_air_date_text);
         genres= (TextView)v.findViewById(R.id.genres_text);
         setContentView(v);
 

@@ -53,6 +53,7 @@ import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.IM
 public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRefreshLayout.OnRefreshListener, AdapterTv.MovieClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private Date date;
     ArrayList<String> details=new ArrayList<>();
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -196,8 +197,9 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
                                     TV_CustomDialog.textView.setText(movie_overView);
                                 else if (movie_overView == "null")
                                     TV_CustomDialog.textView.setText("Not available");
-                                //TV_CustomDialog.actors.setText(credits.toString());
+
                                 TV_CustomDialog.first_air_date.setText(""+formatedDate.toString());
+                                TV_CustomDialog.last_air_date.setText(""+dateFormat.format(date).toString());
                                 TV_CustomDialog.genres.setText(""+genres);
                                 progressDialog.dismiss();
                                 dialog.show();
@@ -413,6 +415,16 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
 
 
                 }
+
+                String last_date=response.getString(Keys_Tv.EndPointKeys.LAST_AIR_DATE);
+                Date date_last_release = null;
+                try {
+                    date_last_release = dateFormat.parse(last_date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                this.date=date_last_release;
+
                 return movie_overView;
 
             } catch (JSONException e) {

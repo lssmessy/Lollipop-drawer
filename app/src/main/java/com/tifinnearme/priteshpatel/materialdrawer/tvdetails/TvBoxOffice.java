@@ -51,6 +51,7 @@ import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.IM
 public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshLayout.OnRefreshListener, AdapterTv.MovieClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private Date date;
     private StringBuilder genres=new StringBuilder();
     private StringBuilder stringBuilder = new StringBuilder();
     private static final String ARG_PARAM1 = "param1";
@@ -199,6 +200,7 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
                                     TV_CustomDialog.textView.setText("Not available");
                                 //TV_CustomDialog.actors.setText(credits.toString());
                                 TV_CustomDialog.first_air_date.setText(""+formatedDate.toString());
+                                TV_CustomDialog.last_air_date.setText(""+dateFormat.format(date).toString());
                                 TV_CustomDialog.genres.setText(""+genres);
                                 progressDialog.dismiss();
                                 dialog.show();
@@ -285,7 +287,6 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
                 if (movie_overView != null) {
                     movie_overView = response.getString(Keys_Tv.EndPointKeys.OVERVIEW);
 
-
                 }
 
                 JSONArray genresArray=response.getJSONArray(Keys_Tv.EndPointKeys.GENRES);
@@ -301,6 +302,16 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
 
 
                 }
+
+                String last_date=response.getString(Keys_Tv.EndPointKeys.LAST_AIR_DATE);
+                Date date_last_release = null;
+                try {
+                    date_last_release = dateFormat.parse(last_date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                this.date=date_last_release;
+
                 return movie_overView;
 
             } catch (JSONException e) {
