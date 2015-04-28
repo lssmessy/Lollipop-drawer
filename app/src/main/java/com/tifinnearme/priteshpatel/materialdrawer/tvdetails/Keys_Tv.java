@@ -17,6 +17,8 @@ public class Keys_Tv {
         public static final String RELEASE_DATE="first_air_date";
         public static final String CAST="cast";
         public static final String ACTOR_NAME="name";
+        public static final String GENRES="genres";
+        public static final String GENRES_NAME="name";
 
 
 

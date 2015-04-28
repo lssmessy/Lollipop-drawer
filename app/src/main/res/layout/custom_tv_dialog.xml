@@ -21,9 +21,8 @@
 
             />
 
-
         <TextView
-            android:id="@+id/air_date"
+            android:id="@+id/genres"
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +33,35 @@
             android:textColor="#000"
             android:textSize="18dp"
             android:textStyle="bold|normal"
-            android:text="First Air Date:" />
+            android:text="Genres:" />
+        <TextView
+            android:id="@+id/genres_text"
+
+            android:layout_marginTop="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+
+            android:text="Not available"
+            android:layout_below="@id/genres"
+             />
+
+
+
+        <TextView
+            android:id="@+id/air_date"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/genres_text"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="#000"
+            android:textSize="18dp"
+            android:textStyle="bold|normal"
+            android:text="Last Air Date:" />
         <TextView
             android:id="@+id/first_air_date"
 
@@ -45,6 +72,8 @@
             android:text="Not available"
             android:layout_above="@+id/cast"
             android:layout_toEndOf="@+id/air_date" />
+
+
         <TextView
             android:id="@+id/cast"
 

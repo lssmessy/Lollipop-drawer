@@ -53,7 +53,7 @@ import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.IM
 public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRefreshLayout.OnRefreshListener, AdapterTv.MovieClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
+    ArrayList<String> details=new ArrayList<>();
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private VolleySingleTon volleySingleTon;
@@ -74,6 +74,7 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
     static String movie_overView = "NOthing";
     private ArrayList<String> credits = new ArrayList<>();
     private StringBuilder stringBuilder=new StringBuilder();
+    private StringBuilder genres=new StringBuilder();
     private ProgressDialog pdial;
     /**
      * Use this factory method to create a new instance of
@@ -191,12 +192,13 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
                                 } else if (current == null) {
                                     TV_CustomDialog.imageView.setImageResource(R.drawable.no_image);
                                 }
-                                if (movie_overView != "null")
+                                if (movie_overView.toString() != "null")
                                     TV_CustomDialog.textView.setText(movie_overView);
                                 else if (movie_overView == "null")
                                     TV_CustomDialog.textView.setText("Not available");
                                 //TV_CustomDialog.actors.setText(credits.toString());
                                 TV_CustomDialog.first_air_date.setText(""+formatedDate.toString());
+                                TV_CustomDialog.genres.setText(""+genres);
                                 progressDialog.dismiss();
                                 dialog.show();
 
@@ -245,6 +247,7 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
                 else {
                     stringBuilder.append("Not available");
                 }
+
                 //L.t(getActivity(),stringBuilder.toString());
                 return stringBuilder;
                 //L.t(getActivity(),""+credits);
@@ -384,6 +387,7 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
     }
 
     public String parSeJsonResponseforID(JSONObject response) {
+       StringBuilder genres_name=new StringBuilder();
 
         String movie_overView = null;
         if (response != null || response.length() != 0) {
@@ -392,8 +396,21 @@ public class TvUpcoming_Latest extends Fragment implements SortListener, SwipeRe
                 movie_overView = response.getString(Keys_Tv.EndPointKeys.OVERVIEW);
                 if (movie_overView != null) {
                     movie_overView = response.getString(Keys_Tv.EndPointKeys.OVERVIEW);
-                    /*Movie movie=new Movie();
-                    movie.setOverview(movie_overView);*/
+                    details.add(movie_overView);
+
+                }
+
+                JSONArray genresArray=response.getJSONArray(Keys_Tv.EndPointKeys.GENRES);
+                for(int i=0; i<genresArray.length(); i++)
+                {
+                    JSONObject job_names = genresArray.getJSONObject(i);
+                    String names = job_names.getString(Keys_Tv.EndPointKeys.GENRES_NAME);
+                    if (i == genresArray.length() - 1)
+                        genres_name.append(names + "");
+                    else
+                        genres_name.append(names + ",");
+                    this.genres=genres_name;
+
 
                 }
                 return movie_overView;

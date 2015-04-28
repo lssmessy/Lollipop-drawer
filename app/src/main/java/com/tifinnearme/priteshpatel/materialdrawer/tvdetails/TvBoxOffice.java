@@ -51,6 +51,7 @@ import static com.tifinnearme.priteshpatel.materialdrawer.api_links.Api_Links.IM
 public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshLayout.OnRefreshListener, AdapterTv.MovieClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private StringBuilder genres=new StringBuilder();
     private StringBuilder stringBuilder = new StringBuilder();
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -145,8 +146,9 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading...");
         progressDialog.show();
-        final TV_CustomDialog dialog = new TV_CustomDialog(getActivity(), android.R.style.Theme_Light);
+        final TV_CustomDialog dialog = new TV_CustomDialog(getActivity(), R.style.cust_dialog);
         dialog.setTitle(movie_array.get(position).getTitle());
+
         final String formatedDate = dateFormat.format(movie_array.get(position).getReleaseDate());
         JsonObjectRequest jrequest = new JsonObjectRequest(Request.Method.GET, getRequestURLforCredits(movie_id), (String) null, new Response.Listener<JSONObject>() {
             @Override
@@ -191,12 +193,13 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
                                 } else if (current == null) {
                                     TV_CustomDialog.imageView.setImageResource(R.drawable.no_image);
                                 }
-                                if (movie_overView != "null")
+                                if (movie_overView.toString() != "null")
                                     TV_CustomDialog.textView.setText(movie_overView);
                                 else if (movie_overView == "null")
                                     TV_CustomDialog.textView.setText("Not available");
                                 //TV_CustomDialog.actors.setText(credits.toString());
                                 TV_CustomDialog.first_air_date.setText(""+formatedDate.toString());
+                                TV_CustomDialog.genres.setText(""+genres);
                                 progressDialog.dismiss();
                                 dialog.show();
 
@@ -272,6 +275,7 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
     }
 
     public String parSeJsonResponseforID(JSONObject response) {
+        StringBuilder genres_name=new StringBuilder();
 
         String movie_overView = null;
         if (response != null || response.length() != 0) {
@@ -280,8 +284,21 @@ public class TvBoxOffice extends Fragment implements SortListener, SwipeRefreshL
                 movie_overView = response.getString(Keys_Tv.EndPointKeys.OVERVIEW);
                 if (movie_overView != null) {
                     movie_overView = response.getString(Keys_Tv.EndPointKeys.OVERVIEW);
-                    /*Movie movie=new Movie();
-                    movie.setOverview(movie_overView);*/
+
+
+                }
+
+                JSONArray genresArray=response.getJSONArray(Keys_Tv.EndPointKeys.GENRES);
+                for(int i=0; i<genresArray.length(); i++)
+                {
+                    JSONObject job_names = genresArray.getJSONObject(i);
+                    String names = job_names.getString(Keys_Tv.EndPointKeys.GENRES_NAME);
+                    if (i == genresArray.length() - 1)
+                        genres_name.append(names + "");
+                    else
+                        genres_name.append(names + ",");
+                    this.genres=genres_name;
+
 
                 }
                 return movie_overView;
