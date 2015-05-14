@@ -21,7 +21,8 @@
         android:layout_height="90dp"
         android:id="@+id/movie_image"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/load_image"/>
     <TextView
         android:textColor="#000"
         android:textSize="18dp"
